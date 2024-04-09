@@ -10,9 +10,16 @@ export default function Menu() {
         <li className="w-1/2 p-5">
           <Link to="/patitos">Patitos</Link>
         </li>
-        <li className="w-1/2 p-5">Simón dice</li>
-        <li className="w-1/2 p-5">Test</li>
-        <li className="w-1/2 p-5">Test</li>
+        <li className="w-1/2 p-5">
+          <Link to="/simon">Simón dice</Link>
+        </li>
+        <li className="w-1/2 p-5">
+          <Link to="/chimp">Chimp</Link>
+        </li>
+        <li className="w-1/2 p-5">
+          <Link to="/visual">Visual</Link>
+        </li>
+
       </ul>
     </>
   )

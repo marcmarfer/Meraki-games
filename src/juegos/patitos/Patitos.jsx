@@ -1,96 +1,73 @@
-import React, { useEffect, useState } from 'react';
-import './Patitos.css';
+import React, { useState, useEffect } from 'react';
 
-function shuffleArray(array) {
-  for (let i = array.length; i > 0; i--) {
+const patitos = [
+  { id: 1, color: 'rosa' },
+  { id: 2, color: 'rojo' },
+  { id: 3, color: 'azul' },
+  // Puedes añadir más patitos si lo deseas
+  { id: 4, color: 'rosa' },
+  { id: 5, color: 'rojo' },
+  { id: 6, color: 'azul' },
+];
+
+function shuffle(array) {
+  const shuffledArray = [...array];
+  for (let i = shuffledArray.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
+    [shuffledArray[i], shuffledArray[j]] = [shuffledArray[j], shuffledArray[i]];
   }
-  return array;
+  return shuffledArray;
 }
 
-function generateUniqueNames() {
-  const baseName = 'Square';
-  const names = [];
-  for (let i = 1; i <= 24; i++) {
-    names.push(`${baseName}${i}`);
-  }
-  return shuffleArray(names);
-}
-
-export default function Patitos() {
-  const [shuffledIds, setShuffledIds] = useState([]);
-  const [shuffledNames, setShuffledNames] = useState([]);
+function App() {
+  const [shuffledPatitos, setShuffledPatitos] = useState([]);
   const [score, setScore] = useState(0);
-  const [selectedId, setSelectedId] = useState(null);
-  const uniqueColor = '#808080'; // Color gris
-  const uniqueName = 'SquareLonely'; // Nombre para el id
+  const [mistakes, setMistakes] = useState(0);
+  const [selectedPatitos, setSelectedPatitos] = useState([]);
 
   useEffect(() => {
-    const uniqueIds = Array.from({ length: 12 }, (_, index) => index);
-    const duplicatedIds = [...uniqueIds, ...uniqueIds];
-    const shuffledIds = shuffleArray(duplicatedIds);
-    setShuffledIds(shuffledIds);
-
-    const names = generateUniqueNames();
-    setShuffledNames(names);
+    setShuffledPatitos(shuffle(patitos));
   }, []);
 
-  const colores = [
-    '#001F3F', // Azul oscuro
-    '#ADD8E6', // Azul claro
-    '#FFA500', // Naranja
-    '#FF0000', // Rojo
-    '#FFC0CB', // Rosa
-    '#C8A2C8', // Lila
-    '#000000', // Negro
-    '#8B4513', // Marrón
-    '#FFFFE0', // Amarillo claro
-    '#FFD700', // Amarillo oscuro
-    '#90EE90', // Verde claro
-    '#008000', // Verde oscuro
-    uniqueColor, // Color único para cuadrado de ID única
-  ];
-
-  const handleClick = (id, name1, name2) => {
-    if (shuffledIds.indexOf(id) === shuffledIds.lastIndexOf(id)) {
-      return; // No hacer nada si el id es único
+  const selectPatito = (patito) => {
+    if (selectedPatitos.some(selected => selected.id === patito.id)) {
+      return;
     }
-  
-    if (selectedId === null) {
-      setSelectedId(id);
-    } else {
-      let clickedName = name1;
-      let selectedName = name2;
-      // console.log("clickedName:" + clickedName + " selectedName:" + selectedName + " id:" + id + " selectedId:" + selectedId);
-      if (clickedName !== selectedName && id === selectedId) {
-        
+
+    setSelectedPatitos([...selectedPatitos, patito]);
+
+    if (selectedPatitos.length === 1) {
+      if (selectedPatitos[0].color === patito.color) {
         setScore(score + 1);
+        // Eliminar los patitos seleccionados si coinciden
+        setTimeout(() => {
+          setShuffledPatitos(shuffledPatitos.filter(p => p.id !== patito.id && p.id !== selectedPatitos[0].id));
+        }, 500);
+      } else {
+        setMistakes(mistakes + 1);
       }
-  
-      setSelectedId(null);
+      setSelectedPatitos([]);
     }
   };
-  
+
   return (
-    <div>
-      <div className="tablero">
-        {shuffledIds.map((id, index) => (
+    <div className="container mx-auto py-8 text-center">
+      <h1 className="text-3xl font-bold mb-4">Juego de Patitos</h1>
+      <p>Puntaje: {score}</p>
+      <p>Errores: {mistakes}</p>
+      <div className="grid grid-cols-3 gap-4 mt-8">
+        {shuffledPatitos.map((patito) => (
           <div
-            key={index}
-            className="pato"
-            id={`pato-${id}`}
-            name={shuffledNames[index]} // Agregar el nombre como un atributo "name"
-            style={{
-              backgroundColor: id === selectedId ? colores[id] : (shuffledIds.indexOf(id) === shuffledIds.lastIndexOf(id) ? uniqueColor : colores[id]),
-            }}
-            onClick={() => handleClick(id, shuffledNames[index])} // Pasar el nombre como parámetro
-          />
+            key={patito.id}
+            className="p-4 cursor-pointer bg-gray-200 rounded-lg"
+            onClick={() => selectPatito(patito)}
+          >
+            <img src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} />
+          </div>
         ))}
       </div>
-      <div className="puntuacion">{`Puntuación: ${score}`}</div>
     </div>
   );
 }
 
-
+export default App;

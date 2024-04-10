@@ -11,13 +11,13 @@ export default function Menu() {
           <Link to="/patitos">Patitos</Link>
         </li>
         <li className="w-1/2 p-5">
-          <Link to="/simon">Simón dice</Link>
+          <Link to="/simon">Sequence Memory</Link>
         </li>
         <li className="w-1/2 p-5">
-          <Link to="/chimp">Chimp</Link>
+          <Link to="/chimp">Chimp Test</Link>
         </li>
         <li className="w-1/2 p-5">
-          <Link to="/visual">Visual</Link>
+          <Link to="/visual">Visual Memory</Link>
         </li>
 
       </ul>

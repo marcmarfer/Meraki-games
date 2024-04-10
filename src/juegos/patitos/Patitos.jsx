@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+// Idea: tres constantes. patitosEasy, patitosMid, patitosHard
 const patitos = [
   { id: 1, color: 'rosa' },
   { id: 2, color: 'rojo' },
@@ -19,7 +20,7 @@ function shuffle(array) {
   return shuffledArray;
 }
 
-function App() {
+function Patitos() {
   const [shuffledPatitos, setShuffledPatitos] = useState([]);
   const [score, setScore] = useState(0);
   const [mistakes, setMistakes] = useState(0);
@@ -52,8 +53,8 @@ function App() {
 
   return (
     <div className="container mx-auto py-8 text-center">
-      <h1 className="text-3xl font-bold mb-4">Juego de Patitos</h1>
-      <p>Puntaje: {score}</p>
+      <h1 className="text-3xl font-bold mb-4">Patitos</h1>
+      <p>Puntuación: {score}</p>
       <p>Errores: {mistakes}</p>
       <div className="grid grid-cols-3 gap-4 mt-8">
         {shuffledPatitos.map((patito) => (
@@ -70,4 +71,4 @@ function App() {
   );
 }
 
-export default App;
+export default Patitos;

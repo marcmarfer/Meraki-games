@@ -135,7 +135,10 @@ const Kinematics = () => {
                 canvas.height = Math.floor(window.innerHeight * 0.7);
             }
 
-            document.getElementById('root').appendChild(canvas);
+            const container = document.createElement('div');
+            container.className = 'canvas-container';
+            container.appendChild(canvas);
+            document.getElementById('root').appendChild(container);
 
             return () => {
                 window.removeEventListener("resize", fitCanvasToScreen);

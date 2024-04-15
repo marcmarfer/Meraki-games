@@ -26,21 +26,21 @@ function generarPatitos(dificultad) {
   const tricolores = ['tripleRosa', 'tripleRojo']; // Lista de colores tricolores solo para hard
   const { rows, cols } = dificultades[dificultad];
   let parejasNecesarias = rows * cols / 2;
-  
+
   if (dificultad === 'easy') parejasNecesarias = 6;
   else if (dificultad === 'normal') parejasNecesarias = 8;
   else if (dificultad === 'hard') parejasNecesarias = 10;
-  
+
   let parejasBicolores = [];
   if (dificultad === 'normal' || dificultad === 'hard') {
     parejasBicolores = bicolores.slice(0, parejasNecesarias / 2);
   }
-  
+
   let parejasTricolores = [];
   if (dificultad === 'hard') {
     parejasTricolores = tricolores.slice(0, parejasNecesarias - parejasBicolores.length);
   }
-  
+
   const parejasDisponibles = [];
 
   // Crear parejas de colores no bicolores
@@ -49,12 +49,12 @@ function generarPatitos(dificultad) {
 
   // Combinar todas las parejas
   parejasDisponibles.push(...parejasColores);
-  
+
   // Agregar parejas de bicolores solo para normal y hard
   if (dificultad === 'normal' || dificultad === 'hard') {
     parejasDisponibles.push(...parejasBicolores);
   }
-  
+
   // Agregar parejas de tricolores solo para hard
   if (dificultad === 'hard') {
     parejasDisponibles.push(...parejasTricolores);
@@ -71,10 +71,6 @@ function generarPatitos(dificultad) {
 
   return patitos;
 }
-
-
-
-
 
 function Patitos() {
   const [shuffledPatitos, setShuffledPatitos] = useState([]);
@@ -131,51 +127,51 @@ function Patitos() {
   };
 
   // Dentro del componente Patitos
-const getPatitoSizeClass = () => {
-  if (dificultad === 'easy') {
-    return 'w-50 mt-5';
-  } else if (dificultad === 'normal') {
-    return 'w-48';
-  } else if (dificultad === 'hard') {
-    return 'w-40';
-  }
-};
+  const getPatitoSizeClass = () => {
+    if (dificultad === 'easy') {
+      return 'w-50 mt-5';
+    } else if (dificultad === 'normal') {
+      return 'w-48';
+    } else if (dificultad === 'hard') {
+      return 'w-40';
+    }
+  };
 
-return (
-  <div className="container mx-auto py-8 text-center">
-    <h1 className="text-3xl font-bold mb-4">Patitos</h1>
-    <p>Puntuación: {score}</p>
-    <p>Errores: {mistakes}</p>
-    <div className="mt-4">
-      <label htmlFor="dificultad">Dificultad:</label>
-      <select id="dificultad" value={dificultad} onChange={handleDificultadChange}>
-        <option value="easy">Fácil</option>
-        <option value="normal">Normal</option>
-        <option value="hard">Difícil</option>
-      </select>
+  return (
+    <div className="container mx-auto py-8 text-center">
+      <h1 className="text-3xl font-bold mb-4">Patitos</h1>
+      <p>Puntuación: {score}</p>
+      <p>Errores: {mistakes}</p>
+      <div className="mt-4">
+        <label htmlFor="dificultad">Dificultad:</label>
+        <select id="dificultad" value={dificultad} onChange={handleDificultadChange}>
+          <option value="easy">Fácil</option>
+          <option value="normal">Normal</option>
+          <option value="hard">Difícil</option>
+        </select>
+      </div>
+      <div className="grid grid-cols-4 gap-4 mt-8" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+        {shuffledPatitos.map((patito) => (
+          <div
+            key={patito.id}
+            className="p-1 cursor-pointer rounded-lg flex justify-center items-center h-full"
+            onClick={() => selectPatito(patito)}
+          >
+            {patito.color === 'sinColor' ? (
+              <img className={`${getPatitoSizeClass()} h-auto`} src={patitoSinColor} alt={`Patito sin color`} />
+            ) : patito.color === 'verdeRosa' || patito.color === 'azulGris' ? (
+              <img className={`${getPatitoSizeClass()} h-auto`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} />
+            ) : (
+              <img className={`${getPatitoSizeClass()} h-auto`} src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} />
+            )}
+          </div>
+        ))}
+      </div>
+      {victory && (
+        <div className="mt-4 text-green-600 font-bold">¡Felicidades! Has encontrado todos los patitos.</div>
+      )}
     </div>
-    <div className="grid grid-cols-4 gap-4 mt-8" style={{ maxHeight: 'calc(100vh - 200px)' }}>
-      {shuffledPatitos.map((patito) => (
-        <div
-          key={patito.id}
-          className="p-1 cursor-pointer rounded-lg flex justify-center items-center h-full"
-          onClick={() => selectPatito(patito)}
-        >
-          {patito.color === 'sinColor' ? (
-            <img className={`${getPatitoSizeClass()} h-auto`} src={patitoSinColor} alt={`Patito sin color`} />
-          ) : patito.color === 'verdeRosa' || patito.color === 'azulGris' ? (
-            <img className={`${getPatitoSizeClass()} h-auto`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} />
-          ) : (
-            <img className={`${getPatitoSizeClass()} h-auto`} src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} />
-          )}
-        </div>
-      ))}
-    </div>
-    {victory && (
-      <div className="mt-4 text-green-600 font-bold">¡Felicidades! Has encontrado todos los patitos.</div>
-    )}
-  </div>
-);
+  );
 
 }
 

@@ -26,6 +26,9 @@ export default function Menu() {
           <Link to="/visual">Visual Memory</Link>
           <Link to="/visual"><img src={eyes} alt="" className="w-8 mt-2" /></Link>
         </li>
+        <li className="w-1/2 p-5">
+          <Link to="/kinematics">Kinematics</Link>
+        </li>
       </ul>
     </>
   );

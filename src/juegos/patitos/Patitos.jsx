@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import './Patitos.css';
 import patitoSinColor from './img/Vector 20.png';
-import patitoRojoAzul from './img/verde.png';
-import patitoRojoAzulMas from './img/verdeFlojo.png';
+import verdeRosa from './img/verdeRosa.png';
+import azulGris from './img/azulGris.png';
 
 // Define las dificultades y la cantidad de patitos para cada una
 const dificultades = {
-  easy: {rows: 4, cols: 3},
-  normal: {rows: 4, cols: 4},
-  hard: {rows: 4, cols: 5},
+  easy: { rows: 4, cols: 3 },
+  normal: { rows: 4, cols: 4 },
+  hard: { rows: 4, cols: 5 },
 };
 
 function shuffle(array) {
@@ -21,24 +22,46 @@ function shuffle(array) {
 
 function generarPatitos(dificultad) {
   const colores = ['rosa', 'rojo', 'azul', 'azulFlojo', 'azulFuerte', 'blanco', 'dorao', 'gris', 'grisAzulado', 'lila', 'naranja', 'rojoFuerte'];
-  const {rows, cols} = dificultades[dificultad];
-  const parejasNecesarias = rows * cols / 2;
+  const bicolores = ['verdeRosa', 'azulGris']; // Lista de colores bicolores para normal y hard
+  const tricolores = ['tripleRosa', 'tripleRojo']; // Lista de colores tricolores solo para hard
+  const { rows, cols } = dificultades[dificultad];
+  let parejasNecesarias = rows * cols / 2;
+  
+  if (dificultad === 'easy') parejasNecesarias = 6;
+  else if (dificultad === 'normal') parejasNecesarias = 8;
+  else if (dificultad === 'hard') parejasNecesarias = 10;
+  
+  let parejasBicolores = [];
+  if (dificultad === 'normal' || dificultad === 'hard') {
+    parejasBicolores = bicolores.slice(0, parejasNecesarias / 2);
+  }
+  
+  let parejasTricolores = [];
+  if (dificultad === 'hard') {
+    parejasTricolores = tricolores.slice(0, parejasNecesarias - parejasBicolores.length);
+  }
+  
   const parejasDisponibles = [];
 
-  // Crear parejas de colores
-  for (let i = 0; i < parejasNecesarias; i++) {
-    let color;
-    if ((dificultad === 'normal' || dificultad === 'hard') && i % 3 === 0) {
-      // Si es normal o hard, agregar parejas de patitos bicolores cada 3 patitos
-      color = i % 2 === 0 ? 'verde' : 'verdeFlojo';
-    } else {
-      color = colores[i % colores.length];
-    }
-    parejasDisponibles.push(color, color); // Agregar dos veces el mismo color para formar una pareja
+  // Crear parejas de colores no bicolores
+  const coloresNoBicolores = colores.filter(color => !bicolores.includes(color) && !tricolores.includes(color));
+  const parejasColores = shuffle(coloresNoBicolores).slice(0, parejasNecesarias - parejasBicolores.length - parejasTricolores.length);
+
+  // Combinar todas las parejas
+  parejasDisponibles.push(...parejasColores);
+  
+  // Agregar parejas de bicolores solo para normal y hard
+  if (dificultad === 'normal' || dificultad === 'hard') {
+    parejasDisponibles.push(...parejasBicolores);
+  }
+  
+  // Agregar parejas de tricolores solo para hard
+  if (dificultad === 'hard') {
+    parejasDisponibles.push(...parejasTricolores);
   }
 
   // Barajar las parejas disponibles
-  const shuffledParejas = shuffle(parejasDisponibles);
+  const shuffledParejas = shuffle([...parejasDisponibles, ...parejasDisponibles]); // Duplicar para formar parejas
 
   // Crear patitos a partir de las parejas barajadas
   const patitos = shuffledParejas.map((color, index) => ({
@@ -48,6 +71,10 @@ function generarPatitos(dificultad) {
 
   return patitos;
 }
+
+
+
+
 
 function Patitos() {
   const [shuffledPatitos, setShuffledPatitos] = useState([]);
@@ -103,41 +130,53 @@ function Patitos() {
     setDificultad(e.target.value);
   };
 
-  return (
-    <div className="container mx-auto py-8 text-center">
-      <h1 className="text-3xl font-bold mb-4">Patitos</h1>
-      <p>Puntuación: {score}</p>
-      <p>Errores: {mistakes}</p>
-      <div className="mt-4">
-        <label htmlFor="dificultad">Dificultad:</label>
-        <select id="dificultad" value={dificultad} onChange={handleDificultadChange}>
-          <option value="easy">Fácil</option>
-          <option value="normal">Normal</option>
-          <option value="hard">Difícil</option>
-        </select>
-      </div>
-      <div className="grid grid-cols-4 gap-4 mt-8">
-        {shuffledPatitos.map((patito) => (
-          <div
-            key={patito.id}
-            className="p-1 cursor-pointer bg-gray-200 rounded-lg"
-            onClick={() => selectPatito(patito)}
-          >
-            {patito.color === 'sinColor' ? (
-              <img className="w-28 h-auto" src={patitoSinColor} alt={`Patito sin color`} />
-            ) : patito.color === 'rojo-azul' || patito.color === 'rojo-azul-mas' ? (
-              <img className="w-28 h-auto" src={patito.color === 'rojo-azul' ? patitoRojoAzul : patitoRojoAzulMas} alt={`Patito ${patito.color}`} />
-            ) : (
-              <img className="w-28 h-auto" src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} />
-            )}
-          </div>
-        ))}
-      </div>
-      {victory && (
-        <div className="mt-4 text-green-600 font-bold">¡Felicidades! Has encontrado todos los patitos.</div>
-      )}
+  // Dentro del componente Patitos
+const getPatitoSizeClass = () => {
+  if (dificultad === 'easy') {
+    return 'w-50 mt-5';
+  } else if (dificultad === 'normal') {
+    return 'w-48';
+  } else if (dificultad === 'hard') {
+    return 'w-40';
+  }
+};
+
+return (
+  <div className="container mx-auto py-8 text-center">
+    <h1 className="text-3xl font-bold mb-4">Patitos</h1>
+    <p>Puntuación: {score}</p>
+    <p>Errores: {mistakes}</p>
+    <div className="mt-4">
+      <label htmlFor="dificultad">Dificultad:</label>
+      <select id="dificultad" value={dificultad} onChange={handleDificultadChange}>
+        <option value="easy">Fácil</option>
+        <option value="normal">Normal</option>
+        <option value="hard">Difícil</option>
+      </select>
     </div>
-  );
+    <div className="grid grid-cols-4 gap-4 mt-8" style={{ maxHeight: 'calc(100vh - 200px)' }}>
+      {shuffledPatitos.map((patito) => (
+        <div
+          key={patito.id}
+          className="p-1 cursor-pointer rounded-lg flex justify-center items-center h-full"
+          onClick={() => selectPatito(patito)}
+        >
+          {patito.color === 'sinColor' ? (
+            <img className={`${getPatitoSizeClass()} h-auto`} src={patitoSinColor} alt={`Patito sin color`} />
+          ) : patito.color === 'verdeRosa' || patito.color === 'azulGris' ? (
+            <img className={`${getPatitoSizeClass()} h-auto`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} />
+          ) : (
+            <img className={`${getPatitoSizeClass()} h-auto`} src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} />
+          )}
+        </div>
+      ))}
+    </div>
+    {victory && (
+      <div className="mt-4 text-green-600 font-bold">¡Felicidades! Has encontrado todos los patitos.</div>
+    )}
+  </div>
+);
+
 }
 
 export default Patitos;

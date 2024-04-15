@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import './Kinematics.css';
 
 const Kinematics = () => {
     const [canvas, setCanvas] = useState(null);
@@ -134,17 +135,16 @@ const Kinematics = () => {
                 canvas.height = Math.floor(window.innerHeight * 0.7);
             }
 
-            document.body.appendChild(canvas);
+            document.getElementById('root').appendChild(canvas);
 
             return () => {
                 window.removeEventListener("resize", fitCanvasToScreen);
                 cancelAnimationFrame(requestId);
-                document.body.removeChild(canvas);
+                document.getElementById('root').removeChild(canvas);
             };
         }
     }, [canvas, context]);
 
-    return null;
 };
 
 export default Kinematics;

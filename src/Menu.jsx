@@ -4,6 +4,7 @@ import duck from './assets/duck.png';
 import brain from './assets/brain.png';
 import eyes from './assets/eyes.png';
 import titulo from './assets/titulo.png';
+import rocket from './assets/rocket.png';
 
 export default function Menu() {
   return (
@@ -29,8 +30,9 @@ export default function Menu() {
           <Link to="/visual" className="hover:text-yellow-500">Visual Memory</Link>
           <Link to="/visual"><img src={eyes} alt="" className="w-8 mt-2" /></Link>
         </li>
-        <li className="w-1/2 p-5">
-          <Link to="/kinematics">Kinematics</Link>
+        <li className="w-1/2 p-5 flex flex-col items-center">
+          <Link to="/kinematics" className="hover:text-yellow-500">Kinematics</Link>
+          <Link to="/kinematics"><img src={rocket} alt="" className="w-8 mt-2" /></Link>
         </li>
       </ul>
     </>

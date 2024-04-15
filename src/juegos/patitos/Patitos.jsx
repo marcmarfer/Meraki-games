@@ -154,15 +154,14 @@ function Patitos() {
         {shuffledPatitos.map((patito) => (
           <div
             key={patito.id}
-            className="p-1 cursor-pointer rounded-lg flex justify-center items-center h-full"
-            onClick={() => selectPatito(patito)}
+            className="p-1 rounded-lg flex justify-center items-center h-full"
           >
             {patito.color === 'sinColor' ? (
-              <img className={`${getPatitoSizeClass()} h-auto`} src={patitoSinColor} alt={`Patito sin color`} />
+              <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patitoSinColor} alt={`Patito sin color`} onClick={() => selectPatito(patito)} />
             ) : patito.color === 'verdeRosa' || patito.color === 'azulGris' ? (
-              <img className={`${getPatitoSizeClass()} h-auto`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} />
+              <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} onClick={() => selectPatito(patito)} />
             ) : (
-              <img className={`${getPatitoSizeClass()} h-auto`} src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} />
+              <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={`/src/juegos/patitos/img/${patito.color}.png`} alt={`Patito ${patito.color}`} onClick={() => selectPatito(patito)} />
             )}
           </div>
         ))}

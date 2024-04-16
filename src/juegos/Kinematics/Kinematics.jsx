@@ -16,7 +16,7 @@ const Kinematics = () => {
         velocityX: -2,
         maxVelocityX: 0,
         velocityY: 0,
-        images: new Image()
+        image: new Image()
     });
 
     const [plane, setPlane] = useState({
@@ -27,7 +27,7 @@ const Kinematics = () => {
         velocityX: 4,
         maxVelocityX: 0,
         velocityY: 0,
-        images: new Image()
+        image: new Image()
     });
 
     const [car, setCar] = useState({
@@ -38,48 +38,30 @@ const Kinematics = () => {
         velocityX: 3,
         maxVelocityX: 0,
         velocityY: 0,
-        images: new Image()
+        image: new Image()
     });
 
-    
     useEffect(() => {
         const newCanvas = document.createElement('canvas');
         setCanvas(newCanvas);
         const newContext = newCanvas.getContext('2d');
         setContext(newContext);
 
-        const loadImage = (src) => {
-            return new Promise((resolve, reject) => {
-                const image = new Image();
-                image.onload = () => resolve(image);
-                image.onerror = (error) => reject(error);
-                image.src = src;
-            });
-        };
+        const backgroundImage = new Image();
+        backgroundImage.src = 'src/juegos/Kinematics/Sprites/Utils/GameBackground.png';
+        setBackgroundImage(backgroundImage);
 
-        const loadImages = async () => {
-            try {
-                const backgroundImage = await loadImage('/Sprites/Utils/GameBackground.png');
-                setBackgroundImage(backgroundImage);
+        const helicopterImage = new Image();
+        helicopterImage.src = 'src/juegos/Kinematics/Sprites/Vehicles/Helicopter.png';
+        setHelicopter(prevState => ({ ...prevState, image: helicopterImage }));
 
-                const helicopterImage = await loadImage('/Sprites/Vehicles/Helicopter.png');
-                setHelicopter(prevState => ({ ...prevState, images: helicopterImage }));
+        const planeImage = new Image();
+        planeImage.src = 'src/juegos/Kinematics/Sprites/Vehicles/Plane.png';
+        setPlane(prevState => ({ ...prevState, image: planeImage }));
 
-                const planeImage = await loadImage('/Sprites/Vehicles/Plane.png');
-                setPlane(prevState => ({ ...prevState, images: planeImage }));
-
-                const carImage = await loadImage('/Sprites/Vehicles/Car.png');
-                setCar(prevState => ({ ...prevState, images: carImage }));
-            } catch (error) {
-                console.error('Error loading images:', error);
-            }
-        };
-
-        loadImages();
-
-        return () => {
-            newContext.clearRect(0, 0, newCanvas.width, newCanvas.height);
-        };
+        const carImage = new Image();
+        carImage.src = 'src/juegos/Kinematics/Sprites/Vehicles/Car.png';
+        setCar(prevState => ({ ...prevState, image: carImage }));
     }, []);
 
     useEffect(() => {
@@ -128,20 +110,32 @@ const Kinematics = () => {
                 }));
             }
 
+            let drawImage = (e, image) => {
+                if (image === backgroundImage) {
+                    e.target.context.drawImage(image, 0, 0, canvas.width, canvas.height);
+                } else if (image === helicopter.image) {
+                    e.target.context.drawImage(image, (canvas.width - 200) - (helicopter.width / 2), (canvas.height / 2 - 150) - (helicopter.height / 2), helicopter.width, helicopter.height);
+                } else if (image === plane.image) {
+                    e.target.context.drawImage(image, 200 - (plane.width / 2), 200, plane.width, plane.height);
+                } else if (image === car.image) {
+                    e.target.context.drawImage(image, 200 - (car.width / 2), canvas.height - 200, car.width, car.height);
+                }
+            }
+
+            let draw = (e) => {
+                const imagesArray = [backgroundImage, helicopter.image, plane.image, car.image];
+
+                imagesArray.forEach((image) => {
+                    image.context = context;
+                    image.onload = (e) => drawImage(e, image);
+                });
+            }
+
             function render() {
-                context.clearRect(0, 0, canvas.width, canvas.height);
 
-                context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                context.drawImage(helicopter.images, helicopter.x, helicopter.y, helicopter.width, helicopter.height);
-                context.drawImage(plane.images, plane.x, plane.y, plane.width, plane.height);
-                context.drawImage(car.images, car.x, car.y, car.width, car.height);
-                
-                context.fillStyle = 'red';
-                context.fillRect(200, 200, 100, 100);
+                // context.clearRect(0, 0, canvas.width, canvas.height);
 
-                context.strokeStyle = 'blue';
-                context.lineWidth = 2;
-                context.strokeRect(200, 50, 100, 100);
+                draw();
             }
 
             window.addEventListener("resize", fitCanvasToScreen);

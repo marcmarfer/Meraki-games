@@ -7,7 +7,7 @@ import Visual from './juegos/visualGame/Visual';
 import Chimp from './juegos/chimp/Chimp';
 import Simon from './juegos/simon/Simon';
 import Menu from './Menu';
-import Kinematics from './juegos/Kinematics/Kinematics';
+import Kinematics from './juegos/kinematics/Kinematics';
 
 // Estilos CSS
 import './index.css'

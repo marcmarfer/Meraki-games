@@ -4,6 +4,7 @@ import './Kinematics.css';
 const Kinematics = () => {
     const [canvas, setCanvas] = useState(null);
     const [context, setContext] = useState(null);
+    const [canvasContainerAdded, setCanvasContainerAdded] = useState(false);
 
     const [backgroundImage, setBackgroundImage] = useState(new Image());
 
@@ -40,11 +41,41 @@ const Kinematics = () => {
         images: new Image()
     });
 
+    
     useEffect(() => {
         const newCanvas = document.createElement('canvas');
         setCanvas(newCanvas);
         const newContext = newCanvas.getContext('2d');
         setContext(newContext);
+
+        const loadImage = (src) => {
+            return new Promise((resolve, reject) => {
+                const image = new Image();
+                image.onload = () => resolve(image);
+                image.onerror = (error) => reject(error);
+                image.src = src;
+            });
+        };
+
+        const loadImages = async () => {
+            try {
+                const backgroundImage = await loadImage('/Sprites/Utils/GameBackground.png');
+                setBackgroundImage(backgroundImage);
+
+                const helicopterImage = await loadImage('/Sprites/Vehicles/Helicopter.png');
+                setHelicopter(prevState => ({ ...prevState, images: helicopterImage }));
+
+                const planeImage = await loadImage('/Sprites/Vehicles/Plane.png');
+                setPlane(prevState => ({ ...prevState, images: planeImage }));
+
+                const carImage = await loadImage('/Sprites/Vehicles/Car.png');
+                setCar(prevState => ({ ...prevState, images: carImage }));
+            } catch (error) {
+                console.error('Error loading images:', error);
+            }
+        };
+
+        loadImages();
 
         return () => {
             newContext.clearRect(0, 0, newCanvas.width, newCanvas.height);
@@ -52,7 +83,7 @@ const Kinematics = () => {
     }, []);
 
     useEffect(() => {
-        if (canvas && context) {
+        if (canvas && context && !canvasContainerAdded) {
             const canvasWidth = Math.floor(window.innerWidth * 0.7);
             const canvasHeight = Math.floor(window.innerHeight * 0.7);
             canvas.width = canvasWidth;
@@ -61,25 +92,6 @@ const Kinematics = () => {
             let requestId;
             let lastTimestamp = 0;
             let time = 0;
-
-            const background = new Image();
-            background.src = '/Sprites/Utils/GameBackground.png';
-            setBackgroundImage(background);
-
-            const helicopterImage = new Image();
-            helicopterImage.src = '/Sprites/Vehicles/Helicopter.png';
-            const planeImage = new Image();
-            planeImage.src = '/Sprites/Vehicles/Plane.png';
-            const carImage = new Image();
-            carImage.src = '/Sprites/Vehicles/Car.png';
-
-            setHelicopter(prevState => ({ ...prevState, images: helicopterImage }));
-            setPlane(prevState => ({ ...prevState, images: planeImage }));
-            setCar(prevState => ({ ...prevState, images: carImage }));
-
-            console.log('Helicopter:', helicopter);
-            console.log('Plane:', plane);
-            console.log('Car:', car);
 
             function gameLoop(timestamp) {
                 if (!lastTimestamp) {
@@ -91,7 +103,7 @@ const Kinematics = () => {
 
                     time += deltaTime;
                     handleMovements(deltaTime, time);
-                    
+
                     render();
                 }
                 requestId = requestAnimationFrame(gameLoop);
@@ -100,7 +112,7 @@ const Kinematics = () => {
             function handleMovements(deltaTime, time) {
                 setHelicopter(prevState => ({
                     ...prevState,
-                    x: prevState.x + prevState.velocityX * deltaTime / 1000, 
+                    x: prevState.x + prevState.velocityX * deltaTime / 1000,
                     y: prevState.initialPosY + (prevState.amplitudeY * Math.cos((time / 1000) * prevState.frequencyY * (Math.PI / 180))),
                     initialPosY: prevState.initialPosY + (prevState.y - prevState.initialPosY) / prevState.smoothness
                 }));
@@ -123,10 +135,14 @@ const Kinematics = () => {
                 context.drawImage(helicopter.images, helicopter.x, helicopter.y, helicopter.width, helicopter.height);
                 context.drawImage(plane.images, plane.x, plane.y, plane.width, plane.height);
                 context.drawImage(car.images, car.x, car.y, car.width, car.height);
-            }
+                
+                context.fillStyle = 'red';
+                context.fillRect(200, 200, 100, 100);
 
-            fitCanvasToScreen();
-            gameLoop();
+                context.strokeStyle = 'blue';
+                context.lineWidth = 2;
+                context.strokeRect(200, 50, 100, 100);
+            }
 
             window.addEventListener("resize", fitCanvasToScreen);
 
@@ -137,17 +153,22 @@ const Kinematics = () => {
 
             const container = document.createElement('div');
             container.className = 'canvas-container';
-            container.appendChild(canvas);
             document.getElementById('root').appendChild(container);
+            container.appendChild(canvas);
+
+            setCanvasContainerAdded(true);
+
+            fitCanvasToScreen();
+            gameLoop();
 
             return () => {
                 window.removeEventListener("resize", fitCanvasToScreen);
                 cancelAnimationFrame(requestId);
-                document.getElementById('root').removeChild(canvas);
             };
         }
     }, [canvas, context]);
 
+    return null;
 };
 
 export default Kinematics;

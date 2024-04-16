@@ -48,19 +48,19 @@ const Kinematics = () => {
         setContext(newContext);
 
         const backgroundImage = new Image();
-        backgroundImage.src = 'src/juegos/Kinematics/Sprites/Utils/GameBackground.png';
+        backgroundImage.src = 'src/juegos/kinematics/sprites/Utils/GameBackground.png';
         setBackgroundImage(backgroundImage);
 
         const helicopterImage = new Image();
-        helicopterImage.src = 'src/juegos/Kinematics/Sprites/Vehicles/Helicopter.png';
+        helicopterImage.src = 'src/juegos/kinematics/sprites/Vehicles/Helicopter.png';
         setHelicopter(prevState => ({ ...prevState, image: helicopterImage }));
 
         const planeImage = new Image();
-        planeImage.src = 'src/juegos/Kinematics/Sprites/Vehicles/Plane.png';
+        planeImage.src = 'src/juegos/kinematics/sprites/Vehicles/Plane.png';
         setPlane(prevState => ({ ...prevState, image: planeImage }));
 
         const carImage = new Image();
-        carImage.src = 'src/juegos/Kinematics/Sprites/Vehicles/Car.png';
+        carImage.src = 'src/juegos/kinematics/sprites/Vehicles/Car.png';
         setCar(prevState => ({ ...prevState, image: carImage }));
     }, []);
 
@@ -132,9 +132,6 @@ const Kinematics = () => {
             }
 
             function render() {
-
-                // context.clearRect(0, 0, canvas.width, canvas.height);
-
                 draw();
             }
 

@@ -122,7 +122,7 @@ const Kinematics = () => {
                 }
             }
 
-            let draw = (e) => {
+            let draw = () => {
                 const imagesArray = [backgroundImage, helicopter.image, plane.image, car.image];
 
                 imagesArray.forEach((image) => {
@@ -154,6 +154,7 @@ const Kinematics = () => {
 
             return () => {
                 window.removeEventListener("resize", fitCanvasToScreen);
+                document.getElementById('root').removeChild(container);
                 cancelAnimationFrame(requestId);
             };
         }

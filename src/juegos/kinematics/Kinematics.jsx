@@ -11,11 +11,15 @@ const Kinematics = () => {
     const [helicopter, setHelicopter] = useState({
         x: 0,
         y: 0,
+        initialPosY: 0,
         width: 200,
         height: 150,
-        velocityX: -2,
+        velocityX: -100,
         maxVelocityX: 0,
         velocityY: 0,
+        amplitudeY: 100,
+        frequencyY: 0.08,
+        smoothness: 800,
         image: new Image()
     });
 
@@ -24,7 +28,7 @@ const Kinematics = () => {
         y: 0,
         width: 200,
         height: 150,
-        velocityX: 4,
+        velocityX: 150,
         maxVelocityX: 0,
         velocityY: 0,
         image: new Image()
@@ -35,7 +39,7 @@ const Kinematics = () => {
         y: 0,
         width: 300,
         height: 150,
-        velocityX: 3,
+        velocityX: 60,
         maxVelocityX: 0,
         velocityY: 0,
         image: new Image()
@@ -115,19 +119,19 @@ const Kinematics = () => {
             function handleMovements(deltaTime, time) {
                 setHelicopter(prevState => ({
                     ...prevState,
-                    x: prevState.x + prevState.velocityX * deltaTime / 1000,
-                    y: prevState.initialPosY + (prevState.amplitudeY * Math.cos((time / 1000) * prevState.frequencyY * (Math.PI / 180))),
-                    initialPosY: prevState.initialPosY + (prevState.y - prevState.initialPosY) / prevState.smoothness
+                    x: helicopter.x += prevState.velocityX * deltaTime / 1000,
+                    y: helicopter.y = helicopter.initialPosY + (prevState.amplitudeY * Math.cos((time / 1000) * prevState.frequencyY * (180 / Math.PI))),
+                    initialPosY: helicopter.initialPosY += (helicopter.y - helicopter.initialPosY) / prevState.smoothness,
                 }));
 
                 setPlane(prevState => ({
                     ...prevState,
-                    x: prevState.x + prevState.velocityX * deltaTime / 1000
+                    x: plane.x += prevState.velocityX * deltaTime / 1000,
                 }));
 
                 setCar(prevState => ({
                     ...prevState,
-                    x: prevState.x + prevState.velocityX * deltaTime / 1000
+                    x: car.x += prevState.velocityX * deltaTime / 1000,
                 }));
             }
 

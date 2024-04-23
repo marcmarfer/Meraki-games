@@ -11,6 +11,7 @@ import Kinematics from './juegos/kinematics/Kinematics';
 
 // Estilos CSS
 import './index.css'
+import WordsBox1 from './juegos/words-box-1/words-box-1';
 
 export default function App() {
   return (
@@ -22,6 +23,7 @@ export default function App() {
         <Route path="/simon" element={<Simon />} />
         <Route path="/chimp" element={<Chimp />} />
         <Route path="/kinematics" element={<Kinematics />} />
+        <Route path="/words-box-1" element={<WordsBox1/>}/>
       </Routes>
     </Router>
   );

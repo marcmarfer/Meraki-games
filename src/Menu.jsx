@@ -5,6 +5,7 @@ import brain from './assets/brain.png';
 import eyes from './assets/eyes.png';
 import titulo from './assets/titulo.png';
 import rocket from './assets/rocket.png';
+import gift from './assets/gift.png';
 
 export default function Menu() {
   return (
@@ -33,6 +34,10 @@ export default function Menu() {
         <li className="w-1/2 p-5 flex flex-col items-center">
           <Link to="/kinematics" className="hover:text-yellow-500">Kinematics</Link>
           <Link to="/kinematics"><img src={rocket} alt="" className="w-8 mt-2" /></Link>
+        </li>
+        <li className="w-1/2 p-5 flex flex-col items-center">
+          <Link to="/words-box-1" className="hover:text-yellow-500">WordsBox1</Link>
+          <Link to="/words-box-1"><img src={gift} alt="" className="w-8 mt-2" /></Link>
         </li>
       </ul>
     </div>

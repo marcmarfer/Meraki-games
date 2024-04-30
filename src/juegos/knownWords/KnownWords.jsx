@@ -149,7 +149,7 @@ function KnownWords() {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-6 pt-36">
             <div>
                 <h2 className="text-xl font-bold mb-4">Selecciona las palabras que conoces:</h2>
                 <div className="grid grid-cols-3 gap-4">

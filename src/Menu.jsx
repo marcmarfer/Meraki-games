@@ -7,6 +7,7 @@ import titulo from './assets/titulo.png';
 import rocket from './assets/rocket.png';
 import gift from './assets/gift.png';
 import interrogante from './assets/interrogante.png'
+import guess from './assets/guess.png'
 
 export default function Menu() {
   return (
@@ -43,6 +44,10 @@ export default function Menu() {
         <li className="w-1/2 p-5 flex flex-col items-center">
           <Link to="/knownWords" className="hover:text-yellow-500">Known Words</Link>
           <Link to="/knownWords"><img src={interrogante} alt="" className="w-6 mt-2" /></Link>
+        </li>
+        <li className="w-1/2 p-5 flex flex-col items-center">
+          <Link to="/guess" className="hover:text-yellow-500">Guess!</Link>
+          <Link to="/guess"><img src={guess} alt="" className="w-12 mt-2" /></Link>
         </li>
       </ul>
     </div>

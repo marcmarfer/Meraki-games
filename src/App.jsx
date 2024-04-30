@@ -10,6 +10,7 @@ import Menu from './Menu';
 import Kinematics from './juegos/kinematics/Kinematics';
 import WordsBox1 from './juegos/words-box-1/words-box-1';
 import KnownWords from './juegos/knownWords/KnownWords';
+import Guess from './juegos/guess/Guess';
 
 
 // Estilos CSS
@@ -27,6 +28,7 @@ export default function App() {
         <Route path="/kinematics" element={<Kinematics />} />
         <Route path="/words-box-1" element={<WordsBox1 />} />
         <Route path="/knownWords" element={<KnownWords />} />
+        <Route path="/guess" element={<Guess />} />
       </Routes>
     </Router>
   );

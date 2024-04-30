@@ -8,10 +8,12 @@ import Chimp from './juegos/chimp/Chimp';
 import Simon from './juegos/simon/Simon';
 import Menu from './Menu';
 import Kinematics from './juegos/kinematics/Kinematics';
+import WordsBox1 from './juegos/words-box-1/words-box-1';
+import KnownWords from './juegos/knownWords/KnownWords';
+
 
 // Estilos CSS
 import './index.css'
-import WordsBox1 from './juegos/words-box-1/words-box-1';
 
 export default function App() {
   return (
@@ -23,7 +25,8 @@ export default function App() {
         <Route path="/simon" element={<Simon />} />
         <Route path="/chimp" element={<Chimp />} />
         <Route path="/kinematics" element={<Kinematics />} />
-        <Route path="/words-box-1" element={<WordsBox1/>}/>
+        <Route path="/words-box-1" element={<WordsBox1 />} />
+        <Route path="/knownWords" element={<KnownWords />} />
       </Routes>
     </Router>
   );

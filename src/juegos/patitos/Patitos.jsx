@@ -88,6 +88,8 @@ function Patitos() {
   useEffect(() => {
     if (guessedPatitos.length === dificultades[dificultad].rows * dificultades[dificultad].cols) {
       setVictory(true);
+      // Llamar a la función para enviar datos al servidor
+      enviarDatosAlServidor();
     }
   }, [guessedPatitos, dificultad]);
 
@@ -135,6 +137,34 @@ function Patitos() {
     } else if (dificultad === 'hard') {
       return 'w-40';
     }
+  };
+
+  const enviarDatosAlServidor = () => {
+    const data = {
+      student_id: 10502,
+      test_id: 1,
+      game_id: 1,
+      score: score,
+      errors: mistakes
+    };
+
+    fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al enviar los datos al servidor');
+      }
+      // Puedes realizar acciones adicionales si la solicitud fue exitosa
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
+    });
   };
 
   return (

@@ -1,20 +1,19 @@
-import Button from './Button'
-import WinnerModal from './WinnerModal'
-import useSimon from '../hooks/useSimon'
-import { TOTAL_BUTTONS } from '../constants'
+import React from 'react';
+import Button from './Button';
+import useSimon from '../hooks/useSimon';
+import { TOTAL_BUTTONS } from '../constants';
 
 const Board = () => {
   const {
     handlePlay,
     handleClick,
-    isPlaying,
     resetGame,
     buttonRefs,
-    lost,
     points,
-    sequenceLength,
     playButton,
-  } = useSimon()
+    handleChangeDifficulty,
+    difficulty
+  } = useSimon();
 
   return (
     <main className="w-screen h-screen grid place-items-center">
@@ -25,7 +24,6 @@ const Board = () => {
             index={index}
             ref={buttonRefs[index]}
             onClick={handleClick}
-            disabled={!isPlaying}
           />
         ))}
 
@@ -34,12 +32,20 @@ const Board = () => {
           onClick={handlePlay}
           disabled={playButton}
         >
-          {sequenceLength === 0 ? 'PLAY' : sequenceLength}
+          {playButton ? 'Playing' : 'Play'}
         </button>
+        <select
+          className="absolute right-10 top-5 bg-gray-800 text-white px-3 py-2 rounded-md"
+          onChange={handleChangeDifficulty}
+          value={difficulty}
+        >
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </select>
       </section>
-      <WinnerModal lost={lost} points={points} onClick={resetGame} />
     </main>
-  )
-}
+  );
+};
 
-export default Board
+export default Board;

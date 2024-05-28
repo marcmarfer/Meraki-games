@@ -159,11 +159,9 @@ function Patitos() {
       if (!response.ok) {
         throw new Error('Error al enviar los datos al servidor');
       }
-      // Puedes realizar acciones adicionales si la solicitud fue exitosa
     })
     .catch(error => {
       console.error('Error:', error);
-      // Puedes manejar el error aquí, por ejemplo, mostrando un mensaje al usuario
     });
   };
 

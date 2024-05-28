@@ -1,118 +1,168 @@
-import { useState, useEffect, useRef } from 'react'
-import { TOTAL_BUTTONS } from '../constants'
+import { useState, useEffect, useRef } from 'react';
+import { TOTAL_BUTTONS } from '../constants';
 
 const useSimon = () => {
-  const [sequence, setSequence] = useState([])
-  const [reversedSequence, setReversedSequence] = useState([])
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [playingIndex, setPlayingIndex] = useState(0)
-  const [lost, setLost] = useState(false)
-  const [points, setPoints] = useState(0)
-  const [playButton, setPlayButton] = useState(false)
-  const buttonRefs = Array.from({ length: TOTAL_BUTTONS.length }, _ =>
+  const [sequence, setSequence] = useState([]);
+  const [reversedSequence, setReversedSequence] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playingIndex, setPlayingIndex] = useState(0);
+  const [points, setPoints] = useState(0);
+  const [errors, setErrors] = useState(0);
+  const [playButton, setPlayButton] = useState(false);
+  const [rounds, setRounds] = useState(4);
+  const [difficulty, setDifficulty] = useState('easy');
+  const [errorCounted, setErrorCounted] = useState(false);
+  const [sequenceFailed, setSequenceFailed] = useState(false); // New state variable to track if sequence has failed
+  const buttonRefs = Array.from({ length: TOTAL_BUTTONS.length }, (_) =>
     useRef(null)
-  )
+  );
 
   const addToSequence = () => {
-    const randomIndex = Math.floor(Math.random() * TOTAL_BUTTONS.length)
-    const newSequence = [...sequence, randomIndex]
-    setSequence(newSequence)
-    reverseSequence({ newSequence })
-  }
+    const randomIndex = Math.floor(Math.random() * TOTAL_BUTTONS.length);
+    const newSequence = [...sequence, randomIndex];
+    setSequence(newSequence);
+    reverseSequence({ newSequence });
+  };
 
   const handlePlay = () => {
     if (!isPlaying) {
-      addToSequence()
-      setPlayButton(true)
+      addToSequence();
+      setPlayButton(true);
     }
-  }
+  };
 
   const reverseSequence = ({ newSequence }) => {
-    const newReversedSequence = [...newSequence].reverse()
-    setReversedSequence(newReversedSequence)
-  }
+    const newReversedSequence = [...newSequence].reverse();
+    setReversedSequence(newReversedSequence);
+  };
 
   const resetGame = () => {
-    buttonRefs.forEach(buttonRef => {
-      buttonRef.current.classList.remove('bg-red-500')
-    })
-    setLost(false)
-    setIsPlaying(false)
-    setPlayingIndex(0)
-    setSequence([])
-    setReversedSequence([])
-    setPlayButton(false)
-  }
+    setIsPlaying(false);
+    setPlayingIndex(0);
+    setSequence([]);
+    setReversedSequence([]);
+    setPlayButton(false);
+    setErrors(0);
+    setErrorCounted(false);
+    setSequenceFailed(false); // Reset sequenceFailed on game reset
+  };
 
-  const handleClick = e => {
+  const handleClick = (e) => {
     if (isPlaying) {
-      const click = e.target.getAttribute('id')
+      const click = e.target.getAttribute('id');
 
       if (reversedSequence[playingIndex] === parseInt(click)) {
         if (playingIndex === sequence.length - 1) {
-          buttonRefs.forEach(buttonRef => {
-            buttonRef.current.classList.add('bg-green-500/75')
-          })
-          setTimeout(() => {
-            buttonRefs.forEach(buttonRef => {
-              buttonRef.current.classList.remove('bg-green-500/75')
-            })
-            setPlayingIndex(0)
-            addToSequence()
-            setIsPlaying(false)
-          }, 250)
+          setPlayingIndex(0);
+          addToSequence();
+          setIsPlaying(false);
+          if (!sequenceFailed) {
+            setPoints(points + 1); // Increment points after completing a sequence if the sequence didn't fail
+          }
+          setErrorCounted(false);
+          setSequenceFailed(false);
         } else {
-          setPlayingIndex(playingIndex + 1)
+          setPlayingIndex(playingIndex + 1);
         }
       } else {
-        buttonRefs.forEach(buttonRef => {
-          buttonRef.current.classList.add('bg-red-500')
-        })
-        setLost(true)
-        setPoints(sequence.length)
+        if (!errorCounted) {
+          setErrors(errors + 1);
+          setErrorCounted(true);
+          setSequenceFailed(true); // Set sequenceFailed to true if an error occurs in the sequence
+        }
       }
     }
-  }
+  };
 
   useEffect(() => {
     if (sequence.length > 0) {
       const showSequence = (index = 0) => {
-        let ref = null
+        let ref = null;
 
         buttonRefs.forEach((buttonRef, i) => {
           if (sequence[index] === i) {
-            ref = buttonRef
-            return
+            ref = buttonRef;
+            return;
           }
-        })
+        });
 
         setTimeout(() => {
           if (ref && ref.current) {
-            ref.current.classList.add('brightness-[2.5]')
+            ref.current.classList.add('brightness-[2.5]');
             setTimeout(() => {
-              ref.current.classList.remove('brightness-[2.5]')
+              ref.current.classList.remove('brightness-[2.5]');
 
-              if (index < sequence.length - 1) showSequence(index + 1)
-              else setIsPlaying(true)
-            }, 250)
+              if (index < sequence.length - 1) showSequence(index + 1);
+              else setIsPlaying(true);
+            }, 250);
           }
-        }, 250)
-      }
-      showSequence()
+        }, 250);
+      };
+      showSequence();
     }
-  }, [sequence])
+  }, [sequence]);
+
+  useEffect(() => {
+    setRounds(difficulty === 'easy' ? 4 : difficulty === 'medium' ? 8 : 12);
+  }, [difficulty]);
+
+  useEffect(() => {
+    if (points + errors === rounds) {
+      enviarDatosAlServidor();
+      resetGame();
+    }
+  }, [points]);
+
+  const handleChangeDifficulty = (e) => {
+    setDifficulty(e.target.value);
+    resetGame();
+  };
+
+  const enviarDatosAlServidor = () => {
+    const data = {
+      student_id: 10502,
+      test_id: 2,
+      game_id: 2,
+      score: points,
+      errors: errors,
+    };
+
+    fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error al enviar los datos al servidor');
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Datos enviados correctamente:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
+
+  useEffect(() => {
+    console.log('Errors:', errors);
+    console.log('Score:', points);
+  }, [errors, points]);
 
   return {
     handlePlay,
     handleClick,
-    isPlaying,
     resetGame,
     buttonRefs,
-    lost,
     points,
-    sequenceLength: sequence.length,
     playButton,
-  }
-}
+    handleChangeDifficulty,
+    difficulty
+  };
+};
 
-export default useSimon
+export default useSimon;

@@ -11,14 +11,14 @@ import guess from './assets/guess.png';
 
 export default function Menu() {
   const games = [
-    { to: "/patitos", name: "Patitos", img: duck, imgClass: "w-8" },
-    { to: "/simon", name: "Sequence Memory", img: brain, imgClass: "w-9" },
-    { to: "/chimp", name: "Chimp Test", img: monkey, imgClass: "w-9" },
-    { to: "/visual", name: "Visual Memory", img: eyes, imgClass: "w-8" },
-    { to: "/kinematics", name: "Kinematics", img: rocket, imgClass: "w-8" },
-    { to: "/words-box-1", name: "WordsBox1", img: gift, imgClass: "w-12" },
-    { to: "/knownWords", name: "Known Words", img: interrogante, imgClass: "w-6" },
-    { to: "/guess", name: "Guess!", img: guess, imgClass: "w-12" },
+    { to: "/patitos?id=123&gameTest_id=7&test_id=10&game_id=13&level=5", name: "Patitos", img: duck, imgClass: "w-8" },
+    { to: "/simon?id=124&gameTest_id=8&test_id=11&game_id=14&level=5", name: "Sequence Memory", img: brain, imgClass: "w-9" },
+    { to: "/chimp?id=125&gameTest_id=9&test_id=12&game_id=15&level=5", name: "Chimp Test", img: monkey, imgClass: "w-9" },
+    { to: "/visual?id=126&gameTest_id=10&test_id=13&game_id=16&level=5", name: "Visual Memory", img: eyes, imgClass: "w-8" },
+    { to: "/kinematics?id=127&gameTest_id=11&test_id=14&game_id=17&level=5", name: "Kinematics", img: rocket, imgClass: "w-8" },
+    { to: "/words-box-1?id=128&gameTest_id=12&test_id=15&game_id=18&level=5", name: "WordsBox1", img: gift, imgClass: "w-12" },
+    { to: "/knownWords?id=129&gameTest_id=13&test_id=16&game_id=19&level=5", name: "Known Words", img: interrogante, imgClass: "w-6" },
+    { to: "/guess?id=130&gameTest_id=14&test_id=17&game_id=20&level=5", name: "Guess!", img: guess, imgClass: "w-12" },
   ];
 
   return (

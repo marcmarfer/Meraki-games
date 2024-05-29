@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Patitos.css';
 import patitoSinColor from './img/Vector 20.png';
 import verdeRosa from './img/verdeRosa.png';
@@ -81,6 +82,15 @@ function Patitos() {
   const [victory, setVictory] = useState(false);
   const [dificultad, setDificultad] = useState('easy'); // Por defecto, comienza en easy
 
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const studentId = searchParams.get('id');
+  const gameTestId = searchParams.get('gameTest_id');
+  const testId = searchParams.get('test_id');
+  const gameId = searchParams.get('game_id');
+  const level = searchParams.get('level');
+
   useEffect(() => {
     setShuffledPatitos(shuffle(generarPatitos(dificultad)));
   }, [dificultad]);
@@ -141,11 +151,15 @@ function Patitos() {
 
   const enviarDatosAlServidor = () => {
     const data = {
-      student_id: 10502,
-      test_id: 1,
-      game_id: 1,
-      score: score,
-      errors: mistakes
+      student_id: parseInt(studentId),
+      game_test_id: parseInt(gameTestId),
+      test_id: parseInt(testId),
+      game_id: parseInt(gameId),
+      time: 0,
+      score: parseInt(score),
+      errors: parseInt(mistakes),
+      played: "true",
+      level: parseInt(level)
     };
 
     fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {

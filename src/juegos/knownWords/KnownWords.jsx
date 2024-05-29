@@ -171,7 +171,8 @@ function KnownWords() {
       time: 0,
       score: parseInt(score),
       errors: parseInt(mistakes),
-      played: "true"
+      played: "true",
+      level: parseInt(level)
     };
   
 

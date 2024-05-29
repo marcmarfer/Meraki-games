@@ -1,12 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useLocation } from 'react-router-dom';
 import './Kinematics.css';
 
 const Kinematics = () => {
+    const canvasRef = useRef(null)
     const [canvas, setCanvas] = useState(null);
     const [context, setContext] = useState(null);
     const [canvasContainerAdded, setCanvasContainerAdded] = useState(false);
+    const [showQuestion, setShowQuestion] = useState(false);
+    const [selectedAnswer, setSelectedAnswer] = useState(null);
+    const [timer, setTimer] = useState(0);
 
     const [backgroundImage, setBackgroundImage] = useState(new Image());
+
+    const location = useLocation();
+    const searchParams = new URLSearchParams(location.search);
+
+    const studentId = searchParams.get('id');
+    const gameTestId = searchParams.get('gameTest_id');
+    const testId = searchParams.get('test_id');
+    const gameId = searchParams.get('game_id');
+    const level = searchParams.get('level');
 
     const [helicopter, setHelicopter] = useState({
         x: 0,
@@ -53,27 +67,27 @@ const Kinematics = () => {
         newCanvas.height = canvasHeight;
         setCanvas(newCanvas);
     }, []);
-    
+
     useEffect(() => {
         if (!canvas) return;
-    
+
         const newContext = canvas.getContext('2d');
         setContext(newContext);
-        
+
         //set images for each sprite and set their initial position on the canvas
         const backgroundImage = new Image();
         backgroundImage.src = 'src/juegos/kinematics/sprites/Utils/GameBackground.png';
         setBackgroundImage(backgroundImage);
-    
+
         const helicopterImage = new Image();
         helicopterImage.src = 'src/juegos/kinematics/sprites/Vehicles/Helicopter.png';
         setHelicopter(prevState => ({
             ...prevState,
             x: (canvas.width - 200) - (helicopter.width / 2),
-            y: (canvas.height / 2 - 150) - (helicopter.width  / 2),
+            y: (canvas.height / 2 - 150) - (helicopter.width / 2),
             image: helicopterImage
         }));
-    
+
         const planeImage = new Image();
         planeImage.src = 'src/juegos/kinematics/sprites/Vehicles/Plane.png';
         setPlane(prevState => ({
@@ -82,7 +96,7 @@ const Kinematics = () => {
             y: 200,
             image: planeImage
         }));
-    
+
         const carImage = new Image();
         carImage.src = 'src/juegos/kinematics/sprites/Vehicles/Car.png';
         setCar(prevState => ({
@@ -92,7 +106,7 @@ const Kinematics = () => {
             image: carImage
         }));
     }, [canvas]);
-    
+
     useEffect(() => {
         if (canvas && context && !canvasContainerAdded) {
             console.log(canvas.width, canvas.height)
@@ -146,11 +160,11 @@ const Kinematics = () => {
                     e.target.context.drawImage(image, car.x, car.y, car.width, car.height);
                 }
             }
-            
+
             let draw = () => {
                 context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
                 const imagesArray = [backgroundImage, helicopter.image, plane.image, car.image];
-            
+
                 const animate = () => {
                     imagesArray.forEach((image) => {
                         renderImage({ target: { context } }, image);
@@ -190,7 +204,77 @@ const Kinematics = () => {
         }
     }, [canvas, context]);
 
-    return null;
+    useEffect(() => {
+        if (timer === 10) {
+            setShowQuestion(true);
+        }
+    }, [timer]);
+
+    const handleAnswerSelection = (answer) => {
+        setSelectedAnswer(answer);
+        enviarDatosAlServidor();
+    };
+
+    const enviarDatosAlServidor = () => {
+        const data = {
+            student_id: parseInt(studentId),
+            score: selectedAnswer === 'yellow' ? 1 : 0,
+            errors: selectedAnswer !== 'yellow' ? 1 : 0,
+            student_id: parseInt(studentId),
+            game_test_id: parseInt(gameTestId),
+            test_id: parseInt(testId),
+            game_id: parseInt(gameId),
+            time: 0,
+            played: "true",
+            level: parseInt(level)
+        };
+
+        fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Error al enviar los datos al servidor');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log('Datos enviados correctamente:', data);
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    };
+
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTimer((prevTimer) => prevTimer + 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    return (
+        <div>
+            <h1>Kinematics Game</h1>
+            <p>Análisis de la escena que acontece.</p>
+            {showQuestion && (
+                <div className="question-container">
+                    <h2>¿De qué color es el vehículo terrestre?</h2>
+                    <div className="answers">
+                        <button onClick={() => handleAnswerSelection('yellow')}>Amarillo</button>
+                        <button onClick={() => handleAnswerSelection('red')}>Rojo</button>
+                        <button onClick={() => handleAnswerSelection('blue')}>Azul</button>
+                    </div>
+                </div>
+            )}
+            <canvas ref={canvasRef}></canvas>
+        </div>
+    );
 };
 
 export default Kinematics;

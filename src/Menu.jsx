@@ -13,7 +13,7 @@ export default function Menu() {
   const games = [
     { to: "/patitos?id=123&gameTest_id=7&test_id=10&game_id=13&level=5", name: "Patitos", img: duck, imgClass: "w-8" },
     { to: "/simon?id=124&gameTest_id=8&test_id=11&game_id=14&level=5", name: "Sequence Memory", img: brain, imgClass: "w-9" },
-    { to: "/chimp?id=125&gameTest_id=9&test_id=12&game_id=15&level=5", name: "Chimp Test", img: monkey, imgClass: "w-9" },
+    { to: "/chimp?id=125&gameTest_id=9&test_id=12&game_id=15&level=1", name: "Chimp Test", img: monkey, imgClass: "w-9" },
     { to: "/visual?id=126&gameTest_id=10&test_id=13&game_id=16&level=5", name: "Visual Memory", img: eyes, imgClass: "w-8" },
     { to: "/kinematics?id=127&gameTest_id=11&test_id=14&game_id=17&level=5", name: "Kinematics", img: rocket, imgClass: "w-8" },
     { to: "/words-box-1?id=128&gameTest_id=12&test_id=15&game_id=18&level=5", name: "WordsBox1", img: gift, imgClass: "w-12" },

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 function KnownWords() {
   const [gameStarted, setGameStarted] = useState(false);
@@ -10,6 +10,15 @@ function KnownWords() {
   const [wordsToUse, setWordsToUse] = useState([]);
   const [score, setScore] = useState(0); // Estado para el puntaje
   const [mistakes, setMistakes] = useState(0); // Estado para los errores
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+
+  const studentId = searchParams.get('id');
+  const gameTestId = searchParams.get('gameTest_id');
+  const testId = searchParams.get('test_id');
+  const gameId = searchParams.get('game_id');
+  const level = searchParams.get('level');
 
   const wordsEasy = [
     { id: 1, text: 'Mano', isFake: false },
@@ -121,7 +130,7 @@ function KnownWords() {
   }, [selectedLevel]);
 
   const shuffleArray = (array) => {
-    // Copia el array para no mutarlo directamente
+
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -155,12 +164,16 @@ function KnownWords() {
 
   const enviarDatosAlServidor = () => {
     const data = {
-      student_id: 10502,
-      test_id: 1,
-      game_id: 1,
-      score: score,
-      errors: mistakes
+      student_id: parseInt(studentId),
+      game_test_id: parseInt(gameTestId),
+      test_id: parseInt(testId),
+      game_id: parseInt(gameId),
+      time: 0,
+      score: parseInt(score),
+      errors: parseInt(mistakes),
+      played: "true"
     };
+  
 
     fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
       method: 'POST',
@@ -169,18 +182,18 @@ function KnownWords() {
       },
       body: JSON.stringify(data)
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error al enviar los datos al servidor');
-      }
-      return response.json();
-    })
-    .then(data => {
-      console.log('Datos enviados correctamente:', data);
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al enviar los datos al servidor');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Datos enviados correctamente:', data);
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   };
 
   return (

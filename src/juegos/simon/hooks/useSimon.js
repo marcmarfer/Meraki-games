@@ -1,7 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import { TOTAL_BUTTONS } from '../constants';
+import { useLocation } from 'react-router-dom';
 
 const useSimon = () => {
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const studentId = searchParams.get('id');
+  const gameTestId = searchParams.get('gameTest_id');
+  const testId = searchParams.get('test_id');
+  const gameId = searchParams.get('game_id');
+  const level = searchParams.get('level');
+  
   const [sequence, setSequence] = useState([]);
   const [reversedSequence, setReversedSequence] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -103,7 +112,7 @@ const useSimon = () => {
   }, [sequence]);
 
   useEffect(() => {
-    setRounds(difficulty === 'easy' ? 4 : difficulty === 'medium' ? 8 : 12);
+    setRounds(difficulty === 'easy' ? 4 : difficulty === 'medium' ? 6 : 8);
   }, [difficulty]);
 
   useEffect(() => {
@@ -120,11 +129,15 @@ const useSimon = () => {
 
   const enviarDatosAlServidor = () => {
     const data = {
-      student_id: 10502,
-      test_id: 2,
-      game_id: 2,
+      student_id: parseInt(studentId),
+      game_test_id: parseInt(gameTestId),
+      test_id: parseInt(testId),
+      game_id: parseInt(gameId),
+      time: 0,
       score: points,
       errors: errors,
+      played: "true",
+      level: parseInt(level)
     };
 
     fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {

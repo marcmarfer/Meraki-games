@@ -6,49 +6,39 @@ import eyes from './assets/eyes.png';
 import titulo from './assets/titulo.png';
 import rocket from './assets/rocket.png';
 import gift from './assets/gift.png';
-import interrogante from './assets/interrogante.png'
-import guess from './assets/guess.png'
+import interrogante from './assets/interrogante.png';
+import guess from './assets/guess.png';
 
 export default function Menu() {
+  const games = [
+    { to: "/patitos", name: "Patitos", img: duck, imgClass: "w-8" },
+    { to: "/simon", name: "Sequence Memory", img: brain, imgClass: "w-9" },
+    { to: "/chimp", name: "Chimp Test", img: monkey, imgClass: "w-9" },
+    { to: "/visual", name: "Visual Memory", img: eyes, imgClass: "w-8" },
+    { to: "/kinematics", name: "Kinematics", img: rocket, imgClass: "w-8" },
+    { to: "/words-box-1", name: "WordsBox1", img: gift, imgClass: "w-12" },
+    { to: "/knownWords", name: "Known Words", img: interrogante, imgClass: "w-6" },
+    { to: "/guess", name: "Guess!", img: guess, imgClass: "w-12" },
+  ];
+
   return (
-    <div id="root" className="h-screen flex flex-col justify-center items-center">
-      <h1 className='text-blue-700 text-5xl text-center pt-8'>
-        <div className="pt-4 mr-7">Bienvenido a</div> <img src={titulo} className="w-80 mt-5" alt="Título" />
-      </h1>
-      <h3 className="text-blue-600 text-xl text-center mt-5">Por favor, selecciona a qué quieres jugar:</h3>
-      <ul className="flex flex-wrap justify-center text-blue-600 text-lg text-center pt-5">
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/patitos" className="hover:text-yellow-500">Patitos</Link>
-          <Link to="/patitos"><img src={duck} alt="" className="w-8 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/simon" className="hover:text-yellow-500">Sequence Memory</Link>
-          <Link to="/simon"><img src={brain} alt="" className="w-9 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/chimp" className="hover:text-yellow-500">Chimp Test</Link>
-          <Link to="/chimp"><img src={monkey} alt="" className="w-9 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/visual" className="hover:text-yellow-500">Visual Memory</Link>
-          <Link to="/visual"><img src={eyes} alt="" className="w-8 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/kinematics" className="hover:text-yellow-500">Kinematics</Link>
-          <Link to="/kinematics"><img src={rocket} alt="" className="w-8 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/words-box-1" className="hover:text-yellow-500">WordsBox1</Link>
-          <Link to="/words-box-1"><img src={gift} alt="" className="w-12 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/knownWords" className="hover:text-yellow-500">Known Words</Link>
-          <Link to="/knownWords"><img src={interrogante} alt="" className="w-6 mt-2" /></Link>
-        </li>
-        <li className="w-1/2 p-5 flex flex-col items-center">
-          <Link to="/guess" className="hover:text-yellow-500">Guess!</Link>
-          <Link to="/guess"><img src={guess} alt="" className="w-12 mt-2" /></Link>
-        </li>
+    <div id="root" className="h-screen flex flex-col justify-center items-center px-5 md:px-10 lg:px-20 overflow-hidden">
+      <img src={titulo} className="w-60" alt="Título" />
+      <h3 className="text-blue-600 text-2xl text-center mt-5 mb-10">
+        Por favor, selecciona a qué quieres jugar:
+      </h3>
+      <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 text-white text-lg text-center">
+        {games.map((game, index) => (
+          <li key={index} className="flex justify-center">
+            <Link
+              to={game.to}
+              className="w-full p-8 flex flex-col items-center bg-teal-400 rounded-lg shadow-lg transform transition-transform hover:scale-105"
+            >
+              <span>{game.name}</span>
+              <img src={game.img} alt={game.name} className={`${game.imgClass} mt-2`} />
+            </Link>
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -34,14 +34,20 @@ const useVisual = () => {
 
   const addToSequence = () => {
     const newNumbers = [];
-
+    const usedNumbers = new Set();
+  
     while (newNumbers.length < current) {
-      const randomNumber = Math.floor(Math.random() * TOTAL_BUTTONS.length);
+      let randomNumber;
+      do {
+        randomNumber = Math.floor(Math.random() * TOTAL_BUTTONS.length);
+      } while (usedNumbers.has(randomNumber));
+      usedNumbers.add(randomNumber);
       newNumbers.push(randomNumber);
     }
-
+  
     setSequence(newNumbers);
   };
+  
 
   const handleClick = (e) => {
     if (!isPlaying) return;

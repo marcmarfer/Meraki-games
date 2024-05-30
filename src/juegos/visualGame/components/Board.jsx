@@ -1,5 +1,4 @@
 import Button from './Button'
-import WinnerModal from './WinnerModal'
 import { TOTAL_BUTTONS } from '../constants'
 import useVisual from '../hooks/useVisual'
 
@@ -40,7 +39,7 @@ const Board = () => {
           {sequenceLength === 0 ? 'PLAY' : current}
         </button>
       </section>
-      <WinnerModal lost={lost} points={points} onClick={resetGame} />
+      {/* <WinnerModal lost={lost} points={points} onClick={resetGame} /> */}
     </main>
   )
 }

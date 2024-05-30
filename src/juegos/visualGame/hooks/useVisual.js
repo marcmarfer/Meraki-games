@@ -1,159 +1,154 @@
-import { useEffect, useRef, useState } from 'react'
-import { TOTAL_BUTTONS } from '../constants'
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
+import { TOTAL_BUTTONS } from '../constants';
 
 const useVisual = () => {
-  const [sequence, setSequence] = useState([])
-  const [playerSequence, setPlayerSequence] = useState([])
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [playingIndex, setPlayingIndex] = useState(0)
-  const [current, setCurrent] = useState(3)
-  const [lost, setLost] = useState(false)
-  const [points, setPoints] = useState(0)
-  const [playButton, setPlayButton] = useState(false)
-  const buttonRefs = Array.from({ length: TOTAL_BUTTONS.length }, _ =>
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const studentId = searchParams.get('id');
+  const gameTestId = searchParams.get('gameTest_id');
+  const testId = searchParams.get('test_id');
+  const gameId = searchParams.get('game_id');
+  const level = searchParams.get('level');
+
+  const [sequence, setSequence] = useState([]);
+  const [playerSequence, setPlayerSequence] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [playingIndex, setPlayingIndex] = useState(0);
+  const [current, setCurrent] = useState(2); // Initial sequence has 2 keys
+  const [lost, setLost] = useState(false);
+  const [points, setPoints] = useState(0);
+  const [playButton, setPlayButton] = useState(false);
+  const [totalErrors, setTotalErrors] = useState(0); // Total errors across all sequences
+  const buttonRefs = Array.from({ length: TOTAL_BUTTONS.length }, (_) =>
     useRef(null)
-  )
+  );
+
+  const difficultyLevels = {
+    1: { sequences: 6, name: 'Easy' },
+    5: { sequences: 8, name: 'Medium' },
+    10: { sequences: 10, name: 'Hard' },
+  };
+
+  const selectedDifficulty = difficultyLevels[level] || difficultyLevels[1];
 
   const addToSequence = () => {
-    const newNumbers = []
+    const newNumbers = [];
 
     while (newNumbers.length < current) {
-      const randomNumber = Math.floor(Math.random() * TOTAL_BUTTONS.length)
-
-      newNumbers.push(randomNumber)
+      const randomNumber = Math.floor(Math.random() * TOTAL_BUTTONS.length);
+      newNumbers.push(randomNumber);
     }
 
-    setSequence(newNumbers)
-  }
+    setSequence(newNumbers);
+  };
 
-  const handleClick = e => {
-    if (!isPlaying) return
+  const handleClick = (e) => {
+    if (!isPlaying) return;
 
-    const click = parseInt(e.target.getAttribute('id'))
+    const click = parseInt(e.target.getAttribute('id'));
 
-    const isButtonInSequence = sequence.includes(click)
+    setPlayerSequence([...playerSequence, click]);
 
-    // pierde directamente
-    if (!isButtonInSequence) {
-      buttonRefs.forEach(ref => {
-        ref.current.classList.add('bg-red-500')
-      })
-      setLost(true)
-      setPoints(current)
-    } else {
-      // sigue jugando
-      setPlayerSequence([...playerSequence, click])
-      setPlayingIndex(playingIndex + 1)
+    if (!sequence.includes(click) && !lost) {
+      setLost(true);
+      setTotalErrors(totalErrors + 1); // Increment the total errors count
     }
-  }
+
+    setPlayingIndex(playingIndex + 1);
+  };
 
   const handlePlay = () => {
     if (!isPlaying) {
-      addToSequence()
-      setPlayButton(true)
+      addToSequence();
+      setPlayButton(true);
     }
-  }
+  };
 
   const resetGame = () => {
-    setSequence([])
-    setPlayerSequence([])
-    setIsPlaying(false)
-    setPlayingIndex(0)
-    setCurrent(3)
-    setLost(false)
-    setPoints(0)
-    setPlayButton(false)
-  }
+    setSequence([]);
+    setPlayerSequence([]);
+    setIsPlaying(false);
+    setPlayingIndex(0);
+    setCurrent(2); // Reset the number of keys in the sequence to 2
+    setLost(false);
+    setPoints(0);
+    setPlayButton(false);
+  };
 
   useEffect(() => {
-    if (!isPlaying) return
+    if (!isPlaying) return;
     if (playingIndex === sequence.length) {
-      const isCorrectSequence =
-        JSON.stringify(playerSequence.sort()) ===
-        JSON.stringify(sequence.sort())
-
-      if (isCorrectSequence) {
-        buttonRefs.forEach(buttonRef => {
-          buttonRef.current.disabled = true
-          buttonRef.current.classList.add('bg-green-500/75')
-        })
-
-        setTimeout(() => {
-          buttonRefs.forEach(buttonRef => {
-            buttonRef.current.disabled = false
-            buttonRef.current.classList.remove('bg-green-500/75')
-          })
-
-          setIsPlaying(false)
-          setSequence([])
-          setPlayerSequence([])
-          setCurrent(current + 1)
-          setPlayingIndex(0)
-          addToSequence()
-        }, 1000)
-      } else {
-        buttonRefs.forEach(buttonRef => {
-          buttonRef.current.classList.add('bg-red-500')
-        })
-        setLost(true)
-        setPoints(current)
+      if (playerSequence.length === sequence.length && !lost) {
+        setPoints(points + 1);
       }
+
+      setPlayerSequence([]);
+      setLost(false);
+      setPlayingIndex(0);
+      setCurrent((prevCurrent) => prevCurrent < 10 ? prevCurrent + 1 : prevCurrent); // Increment the number of keys in the sequence if it's not already 10
+      addToSequence();
     }
-  }, [playingIndex])
+  }, [playingIndex]);
 
   useEffect(() => {
-    if (sequence.length === 0) return
+    if (sequence.length === 0) return;
 
-    // Filtrar la secuencia y contar la frecuencia de cada número
-    const frequencyMap = sequence.reduce((map, num) => {
-      map[num] = (map[num] || 0) + 1
-      return map
-    }, {})
+    sequence.forEach((buttonIndex) => {
+      const ref = buttonRefs[buttonIndex].current;
+      ref.classList.add('brightness-[2.5]');
+    });
 
-    // Resaltar todos los botones al mismo tiempo
-    sequence.forEach(buttonIndex => {
-      const ref = buttonRefs[buttonIndex].current
-      ref.classList.add('brightness-[2.5]')
-    })
-
-    // Después de un tiempo, quitar el resaltado
     setTimeout(() => {
-      sequence.forEach(buttonIndex => {
-        const ref = buttonRefs[buttonIndex].current
-        ref.classList.remove('brightness-[2.5]')
-      })
+      sequence.forEach((buttonIndex) => {
+        const ref = buttonRefs[buttonIndex].current;
+        ref.classList.remove('brightness-[2.5]');
+      });
 
-      // Resaltar de nuevo los duplicados según su frecuencia
-      setTimeout(() => {
-        let time = 0
+      setIsPlaying(true);
+    }, 1000);
+  }, [sequence]);
 
-        for (const [num, frequency] of Object.entries(frequencyMap)) {
-          if (frequency > 1) {
-            // Resaltar tantas veces como sea la frecuencia
-            for (let i = 0; i < frequency; i++) {
-              const buttonIndex = parseInt(num)
-              const ref = buttonRefs[buttonIndex].current
-              time = i * 500
-              console.log(time)
+  useEffect(() => {
+    console.log(points, totalErrors, selectedDifficulty.sequences)
+    if (points + totalErrors === selectedDifficulty.sequences) {
+      enviarDatosAlServidor();
+    }
+  }, [points, totalErrors]);
 
-              // Agregar un resaltado adicional después de un tiempo
-              setTimeout(() => {
-                ref.classList.add('brightness-[2.5]')
-                setTimeout(() => {
-                  ref.classList.remove('brightness-[2.5]')
-                }, 200)
-              }, time) // Ajusta el tiempo según sea necesario
-            }
-          }
+  const enviarDatosAlServidor = () => {
+    const data = {
+      student_id: parseInt(studentId),
+      game_test_id: parseInt(gameTestId),
+      test_id: parseInt(testId),
+      game_id: parseInt(gameId),
+      time: 0,
+      score: points,
+      errors: totalErrors,
+      played: 'true',
+      level: parseInt(level),
+    };
+
+    fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error('Error sending data to server');
         }
-
-        // Habilitar la interacción del jugador después de completar todas las animaciones
-        setTimeout(() => {
-          setIsPlaying(true)
-        }, time) // Ajusta el tiempo según sea necesario
-      }, 500) // Ajusta el tiempo según sea necesario
-    }, 1000) // Ajusta el tiempo según sea necesario
-  }, [sequence])
+        return response.json();
+      })
+      .then((data) => {
+        console.log('Data sent successfully:', data);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
+  };
 
   return {
     handlePlay,
@@ -166,7 +161,8 @@ const useVisual = () => {
     sequenceLength: sequence.length,
     current,
     playButton,
-  }
-}
+    selectedDifficulty,
+  };
+};
 
-export default useVisual
+export default useVisual;

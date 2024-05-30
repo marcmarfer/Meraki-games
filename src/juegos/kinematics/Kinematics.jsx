@@ -205,7 +205,7 @@ const Kinematics = () => {
     }, [canvas, context]);
 
     useEffect(() => {
-        if (timer === 10) {
+        if (timer === 11) {
             setShowQuestion(true);
         }
     }, [timer]);
@@ -260,21 +260,21 @@ const Kinematics = () => {
 
     return (
         <div>
-            <h1>Kinematics Game</h1>
-            <p>Análisis de la escena que acontece.</p>
+            <h1 className='title'>Kinematics Game</h1>
+            {!showQuestion && <p className='statement'>Analiza la escena que acontece:</p>}
             {showQuestion && (
                 <div className="question-container">
                     <h2>¿De qué color es el vehículo terrestre?</h2>
                     <div className="answers">
-                        <button onClick={() => handleAnswerSelection('yellow')}>Amarillo</button>
-                        <button onClick={() => handleAnswerSelection('red')}>Rojo</button>
-                        <button onClick={() => handleAnswerSelection('blue')}>Azul</button>
+                        <button className='button' onClick={() => handleAnswerSelection('yellow')}>Amarillo</button>
+                        <button className='button' onClick={() => handleAnswerSelection('red')}>Rojo</button>
+                        <button className='button' onClick={() => handleAnswerSelection('blue')}>Azul</button>
                     </div>
                 </div>
             )}
-            <canvas ref={canvasRef}></canvas>
         </div>
     );
 };
+
 
 export default Kinematics;

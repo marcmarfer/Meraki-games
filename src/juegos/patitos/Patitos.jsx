@@ -81,6 +81,8 @@ function Patitos() {
   const [guessedPatitos, setGuessedPatitos] = useState([]);
   const [victory, setVictory] = useState(false);
   const [dificultad, setDificultad] = useState('easy'); // Por defecto, comienza en easy
+  const [startTime, setStartTime] = useState(null);
+  const [endTime, setEndTime] = useState(null);
 
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
@@ -106,15 +108,21 @@ function Patitos() {
 
   useEffect(() => {
     setShuffledPatitos(shuffle(generarPatitos(dificultad)));
+    setStartTime(Date.now());
   }, [dificultad]);
 
   useEffect(() => {
     if (guessedPatitos.length === dificultades[dificultad].rows * dificultades[dificultad].cols) {
       setVictory(true);
-      // Llamar a la función para enviar datos al servidor
-      enviarDatosAlServidor();
+      setEndTime(Date.now());
     }
   }, [guessedPatitos, dificultad]);
+
+  useEffect(() => {
+    if (victory && startTime && endTime) {
+      enviarDatosAlServidor();
+    }
+  }, [victory, startTime, endTime]);
 
   const selectPatito = (patito) => {
     if (selectedPatitos.some(selected => selected.id === patito.id) || guessedPatitos.some(guessed => guessed.id === patito.id)) {
@@ -147,11 +155,6 @@ function Patitos() {
     }
   };
 
-  const handleDificultadChange = (e) => {
-    setDificultad(e.target.value);
-  };
-
-  // Dentro del componente Patitos
   const getPatitoSizeClass = () => {
     if (dificultad === 'easy') {
       return 'w-50 mt-5';
@@ -163,12 +166,14 @@ function Patitos() {
   };
 
   const enviarDatosAlServidor = () => {
+    const timePlayed = Math.round((endTime - startTime) / 1000); // Time in seconds
+
     const data = {
       student_id: parseInt(studentId),
       game_test_id: parseInt(gameTestId),
       test_id: parseInt(testId),
       game_id: parseInt(gameId),
-      time: 0,
+      time: timePlayed,
       score: parseInt(score),
       errors: parseInt(mistakes),
       played: "true",
@@ -194,7 +199,8 @@ function Patitos() {
 
   return (
     <div className="container mx-auto py-8 text-center">
-      <h1 className="text-3xl font-bold mb-4">Patitos</h1>
+      <h1 className="patitosTitle">Patitos</h1>
+      <p className='statement'>Busca las coincidencias de color</p>
       <div className="grid grid-cols-4 gap-4 mt-8" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         {shuffledPatitos.map((patito) => (
           <div
@@ -202,6 +208,9 @@ function Patitos() {
             className="p-1 rounded-lg flex justify-center items-center h-full"
           >
             {patito.color === 'sinColor' ? (
+              <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patitoSinColor} alt={`Patito sin color`} onClick={() => selectPatito(patito)} />
+            ) : patito.color ===
+            'sinColor' ? (
               <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patitoSinColor} alt={`Patito sin color`} onClick={() => selectPatito(patito)} />
             ) : patito.color === 'verdeRosa' || patito.color === 'azulGris' ? (
               <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} onClick={() => selectPatito(patito)} />
@@ -211,12 +220,11 @@ function Patitos() {
           </div>
         ))}
       </div>
-      {victory && (
+      {/* {victory && (
         <div className="mt-4 text-green-600 font-bold">¡Felicidades! Has encontrado todos los patitos.</div>
-      )}
+      )} */}
     </div>
   );
-
 }
 
 export default Patitos;

@@ -18,7 +18,8 @@ export default function Menu() {
     { to: "/kinematics?id=127&gameTest_id=11&test_id=14&game_id=17&level=5", name: "Kinematics", img: rocket, imgClass: "w-8" },
     { to: "/words-box-1?id=128&gameTest_id=12&test_id=15&game_id=18&level=5", name: "WordsBox1", img: gift, imgClass: "w-12" },
     { to: "/knownWords?id=129&gameTest_id=13&test_id=16&game_id=19&level=5", name: "Known Words", img: interrogante, imgClass: "w-6" },
-    { to: "/guess?id=130&gameTest_id=14&test_id=17&game_id=20&level=5", name: "Guess!", img: guess, imgClass: "w-12" },
+    // { to: "/guess?id=130&gameTest_id=14&test_id=17&game_id=20&level=5", name: "Guess!", img: guess, imgClass: "w-12" },
+    //guess game is not ended yet
   ];
 
   return (

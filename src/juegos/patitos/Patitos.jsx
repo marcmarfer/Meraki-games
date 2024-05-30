@@ -91,6 +91,19 @@ function Patitos() {
   const gameId = searchParams.get('game_id');
   const level = searchParams.get('level');
 
+  // Map URL level parameter to difficulty
+  const levelToDifficulty = {
+    '1': 'easy',
+    '5': 'normal',
+    '10': 'hard'
+  };
+
+  useEffect(() => {
+    if (level && levelToDifficulty[level]) {
+      setDificultad(levelToDifficulty[level]);
+    }
+  }, [level]);
+
   useEffect(() => {
     setShuffledPatitos(shuffle(generarPatitos(dificultad)));
   }, [dificultad]);
@@ -169,29 +182,19 @@ function Patitos() {
       },
       body: JSON.stringify(data)
     })
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Error al enviar los datos al servidor');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Error al enviar los datos al servidor');
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+      });
   };
 
   return (
     <div className="container mx-auto py-8 text-center">
       <h1 className="text-3xl font-bold mb-4">Patitos</h1>
-      <p>Puntuación: {score}</p>
-      <p>Errores: {mistakes}</p>
-      <div className="mt-4">
-        <label htmlFor="dificultad">Dificultad:</label>
-        <select id="dificultad" value={dificultad} onChange={handleDificultadChange}>
-          <option value="easy">Fácil</option>
-          <option value="normal">Normal</option>
-          <option value="hard">Difícil</option>
-        </select>
-      </div>
       <div className="grid grid-cols-4 gap-4 mt-8" style={{ maxHeight: 'calc(100vh - 200px)' }}>
         {shuffledPatitos.map((patito) => (
           <div

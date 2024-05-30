@@ -3,6 +3,90 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  width: 80%;
+  max-width: 1000px;
+  padding: 40px;
+  border: 4px solid #FF3333;
+  border-radius: 0px 0px 80px 0px;
+}
+
+.title h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.level-buttons {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.level-button {
+  background-color: #66CCCC;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.level-button.selected {
+  background-color: #FFD700;
+}
+
+.words-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 30px;
+}
+
+.word {
+  background-color: #fff;
+  color: #333;
+  padding: 20px;
+  border: 2px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.drop-box {
+  background-color: #66CC99;
   width: 100%;
-  height: 100vh;
+  padding: 40px;
+  border-radius: 0;
+  text-align: center;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 0;
+}
+
+.score-section {
+  margin-top: 30px;
+}
+
+.end-game-button {
+  margin-top: 20px;
+}
+
+.end-game-btn {
+  background-color: #FF3333;
+  color: white;
+  font-weight: bold;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.end-game-btn:hover {
+  background-color: #CC0000;
 }

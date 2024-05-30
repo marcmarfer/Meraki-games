@@ -1,24 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import './words-box-1.css';
 import { useLocation } from 'react-router-dom';
 
 const WordsBox1 = () => {
-  const [words, setWords] = useState([
-    { id: '1', content: 'alo' },
-    { id: '2', content: 'me' },
-    { id: '3', content: 'llamo' },
-    { id: '4', content: 'Marc' },
-    { id: '5', content: 'análisis' },
-    { id: '6', content: 'barco' },
-    { id: '7', content: 'avión' },
-    { id: '8', content: 'casa' },
-    { id: '9', content: 'árbol' },
-    { id: '10', content: 'zapato' }
-  ]);
-  const [wordsWithA, setWordsWithA] = useState([]);
-  const [selectedLevel, setSelectedLevel] = useState("easy");
-  const [score, setScore] = useState(0);
-  const [mistakes, setMistakes] = useState(0);
-
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -26,51 +10,69 @@ const WordsBox1 = () => {
   const testId = searchParams.get('test_id');
   const gameId = searchParams.get('game_id');
   const gameTestId = searchParams.get('gameTest_id');
+  const level = searchParams.get('level');
+
+  const [words, setWords] = useState([
+    { id: '1', content: 'alo', color: '' },
+    { id: '2', content: 'me', color: '' },
+    { id: '3', content: 'llamo', color: '' },
+    { id: '4', content: 'Marc', color: '' },
+    { id: '5', content: 'análisis', color: '' },
+    { id: '6', content: 'barco', color: '' },
+    { id: '7', content: 'avión', color: '' },
+    { id: '8', content: 'casa', color: '' },
+    { id: '9', content: 'árbol', color: '' },
+    { id: '10', content: 'zapato', color: '' }
+  ]);
+  const [wordsWithA, setWordsWithA] = useState([]);
+  const [selectedLevel, setSelectedLevel] = useState("easy");
+  const [score, setScore] = useState(0);
+  const [mistakes, setMistakes] = useState(0);
 
   useEffect(() => {
     let newWords = [];
 
     if (selectedLevel === "easy") {
       newWords = [
-        { id: '1', content: 'alo' },
-        { id: '2', content: 'me' },
-        { id: '3', content: 'llamo' },
-        { id: '4', content: 'Marc' },
-        { id: '5', content: 'análisis' },
-        { id: '6', content: 'barco' },
-        { id: '7', content: 'avión' },
-        { id: '8', content: 'casa' },
-        { id: '9', content: 'árbol' },
-        { id: '10', content: 'zapato' }
+        { id: '1', content: 'alo', color: '' },
+        { id: '2', content: 'me', color: '' },
+        { id: '3', content: 'llamo', color: '' },
+        { id: '4', content: 'Marc', color: '' },
+        { id: '5', content: 'análisis', color: '' },
+        { id: '6', content: 'barco', color: '' },
+        { id: '7', content: 'avión', color: '' },
+        { id: '8', content: 'casa', color: '' },
+        { id: '9', content: 'árbol', color: '' },
+        { id: '10', content: 'zapato', color: '' }
       ];
     } else if (selectedLevel === "medium") {
       newWords = [
-        { id: '1', content: 'alo' },
-        { id: '2', content: 'me' },
-        { id: '3', content: 'llamo' },
-        { id: '4', content: 'Marc' },
-        { id: '5', content: 'análisis' },
-        { id: '6', content: 'barco' },
-        { id: '7', content: 'avión' },
-        { id: '8', content: 'casa' },
-        { id: '9', content: 'árbol' },
-        { id: '10', content: 'zapato' },
-        { id: '11', content: 'amigos' }
+        { id: '1', content: 'alo', color: '' },
+        { id: '2', content: 'me', color: '' },
+        { id: '3', content: 'llamo', color: '' },
+        { id: '4', content: 'Marc', color: '' },
+        { id: '5', content: 'análisis', color: '' },
+        { id: '6', content: 'barco', color: '' },
+        { id: '7', content: 'avión', color: '' },
+        { id: '8', content: 'casa', color: '' },
+        { id: '9', content: 'árbol', color: '' },
+        { id: '10', content: 'zapato', color: '' },
+        { id: '11', content: 'amigos', color: '' }
       ];
     } else if (selectedLevel === "hard") {
       newWords = [
-        { id: '1', content: 'alo' },
-        { id: '2', content: 'me' },
-        { id: '3', content: 'llamo' },
-        { id: '4', content: 'Marc' },
-        { id: '5', content: 'análisis' },
-        { id: '6', content: 'barco' },
-        { id: '7', content: 'avión' },
-        { id: '8', content: 'casa' },
-        { id: '9', content: 'árbol' },
-        { id: '10', content: 'zapato' },
-        { id: '11', content: 'caballo' },
-        { id: '12', content: 'camión' }
+        { id: '1', content: 'alo', color: '' },
+        { id: '2', content: 'me', color: '' },
+        { id: '3', content: 'llamo', color: '' },
+        { id: '4', content: 'Marc', color: '' },
+        { id: '5', content: 'análisis', color: '' },
+        { id: '6', content: 'barco', color: '' },
+        { id: '7', content: 'avión', color: '' },
+        { id: '8', content: 'casa', color: '' },
+        { id: '9', content: 'árbol', color: '' },
+        { id: '10', content: 'zapato', color: '' },
+        { id: '11', content: 'caballo', color: '' },
+        { id: '12', content: 'camión', color: '' }
       ];
     }
 
@@ -90,11 +92,11 @@ const WordsBox1 = () => {
     const id = e.dataTransfer.getData('id');
     const content = e.dataTransfer.getData('content');
     const word = { id, content };
-
+  
     if (target === 'box-a') {
-      setWordsWithA(prevState => [...prevState, word]);
-      setWords(prevState => prevState.filter(word => word.id !== id));
-
+      setWordsWithA(prevState => [...prevState, { ...word, color: '#000' }]);
+      setWords(prevState => prevState.filter(w => w.id !== id));
+  
       if (selectedLevel === "easy" && content.startsWith('a')) {
         setScore(score + 1);
       } else if (selectedLevel === "medium" && content.startsWith('a') && content.endsWith('s')) {
@@ -104,9 +106,12 @@ const WordsBox1 = () => {
       } else {
         setMistakes(mistakes + 1);
       }
+    } else {
+      setWords(prevState => prevState.map(w => w.id === id ? { ...w, color: '#fff' } : w));
+      setWordsWithA(prevState => prevState.filter(w => w.id !== id));
     }
   };
-
+  
   const onDragOver = (e) => {
     e.preventDefault();
   };
@@ -117,6 +122,7 @@ const WordsBox1 = () => {
       test_id: parseInt(testId),
       game_id: parseInt(gameId),
       gameTest_id: parseInt(gameTestId),
+      level: parseInt(level),
       time: 0,
       score: parseInt(score),
       errors: parseInt(mistakes),
@@ -159,27 +165,23 @@ const WordsBox1 = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
+    <div className="flex items-center justify-center min-h-screen">
       <div className='words-box-1-container'>
-        <div className="mb-4">
+        <div className='title'>
           <h2>{renderTitle()}</h2>
         </div>
-        <div className="mb-4">
-          <button onClick={() => setSelectedLevel("easy")} className={`mr-2 ${selectedLevel === "easy" ? "bg-yellow-300" : "bg-gray-300"} hover:bg-yellow-300 text-white font-bold py-2 px-4 rounded`}>Fácil</button>
-          <button onClick={() => setSelectedLevel("medium")} className={`mr-2 ${selectedLevel === "medium" ? "bg-yellow-300" : "bg-gray-300"} hover:bg-yellow-300 text-white font-bold py-2 px-4 rounded`}>Medio</button>
-          <button onClick={() => setSelectedLevel("hard")} className={`mr-2 ${selectedLevel === "hard" ? "bg-yellow-300" : "bg-gray-300"} hover:bg-yellow-300 text-white font-bold py-2 px-4 rounded`}>Hard</button>
+        <div className='level-buttons'>
+          <button onClick={() => setSelectedLevel("easy")} className={`mr-2 level-button ${selectedLevel === "easy" ? "selected" : ""}`}>Fácil</button>
+          <button onClick={() => setSelectedLevel("medium")} className={`mr-2 level-button ${selectedLevel === "medium" ? "selected" : ""}`}>Medio</button>
+          <button onClick={() => setSelectedLevel("hard")} className={`mr-2 level-button ${selectedLevel === "hard" ? "selected" : ""}`}>Difícil</button>
         </div>
-        <div
-          onDrop={(e) => onDrop(e, 'box-1')}
-          onDragOver={onDragOver}
-          style={{ border: '1px solid black', padding: '10px', width: '200px', minHeight: '100px' }}
-        >
+        <div className='words-grid flex flex-wrap justify-center'>
           {words.map(word => (
             <div
               key={word.id}
-              draggable
+              draggable='true'
               onDragStart={(e) => onDragStart(e, word.id, word.content)}
-              style={{ margin: '8px 0', cursor: 'move' }}
+              className='word white'
             >
               {word.content}
             </div>
@@ -188,7 +190,7 @@ const WordsBox1 = () => {
         <div
           onDrop={(e) => onDrop(e, 'box-a')}
           onDragOver={onDragOver}
-          style={{ marginTop: '20px', border: '1px solid green', padding: '10px', width: '200px', minHeight: '100px' }}
+          className='drop-box'
         >
           {wordsWithA.map(word => (
             <div key={word.id} style={{ margin: '8px 0' }}>
@@ -196,16 +198,17 @@ const WordsBox1 = () => {
             </div>
           ))}
         </div>
-        <div className="mt-4">
+        <div className='score-section'>
           <p>Puntaje: {score}</p>
           <p>Errores: {mistakes}</p>
         </div>
-        <div className="mt-4">
-          <button onClick={endGame} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Terminar Juego</button>
+        <div className='end-game-button'>
+          <button onClick={endGame} className='end-game-btn'>Terminar Juego</button>
         </div>
       </div>
     </div>
   );
+  
 }
 
 export default WordsBox1;

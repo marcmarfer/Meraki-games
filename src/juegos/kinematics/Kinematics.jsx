@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import './Kinematics.css';
 
 const Kinematics = () => {
-    const canvasRef = useRef(null)
+    const canvasRef = useRef(null);
     const [canvas, setCanvas] = useState(null);
     const [context, setContext] = useState(null);
     const [canvasContainerAdded, setCanvasContainerAdded] = useState(false);
     const [showQuestion, setShowQuestion] = useState(false);
     const [selectedAnswer, setSelectedAnswer] = useState(null);
     const [timer, setTimer] = useState(0);
-
     const [backgroundImage, setBackgroundImage] = useState(new Image());
 
     const location = useLocation();
@@ -85,7 +84,6 @@ const Kinematics = () => {
         const newContext = canvas.getContext('2d');
         setContext(newContext);
 
-        // Set images for each sprite and set their initial position on the canvas
         const backgroundImage = new Image();
         backgroundImage.src = 'src/juegos/kinematics/sprites/Utils/GameBackground.png';
         setBackgroundImage(backgroundImage);
@@ -154,8 +152,7 @@ const Kinematics = () => {
 
             function handleMovements(deltaTime, time) {
                 setHelicopter(prevState => ({
-                    ...prevState
-                    ,
+                    ...prevState,
                     x: helicopter.x += prevState.velocityX * deltaTime / 1000,
                     y: helicopter.y = helicopter.initialPosY + (prevState.amplitudeY * Math.cos((time / 1000) * prevState.frequencyY * (180 / Math.PI))),
                     initialPosY: helicopter.initialPosY += (helicopter.y - helicopter.initialPosY) / prevState.smoothness,
@@ -213,14 +210,12 @@ const Kinematics = () => {
                 animate();
             }
             
-            
             function render() {
                 draw();
             }
 
             window.addEventListener("resize", fitCanvasToScreen);
 
-            //function to resize the canvas in case the window is resized
             function fitCanvasToScreen() {
                 canvas.width = Math.floor(window.innerWidth * 0.7);
                 canvas.height = Math.floor(window.innerHeight * 0.7);
@@ -251,7 +246,6 @@ const Kinematics = () => {
         }
     }, [timer, level]);
     
-
     const handleAnswerSelection = (answer) => {
         let score = 0;
         let errors = 0;
@@ -314,7 +308,6 @@ const Kinematics = () => {
             });
     };
     
-
     useEffect(() => {
         const interval = setInterval(() => {
             setTimer((prevTimer) => prevTimer + 1);
@@ -322,6 +315,10 @@ const Kinematics = () => {
 
         return () => clearInterval(interval);
     }, []);
+
+    const endGame = () => {
+        enviarDatosAlServidor(0, 0); // Example data, adjust as needed
+    };
 
     return (
         <div>
@@ -363,9 +360,13 @@ const Kinematics = () => {
                     )}
                 </div>
             )}
+            {selectedAnswer && (
+                <div className="navigation-buttons">
+                    <Link to="/" onClick={endGame} className="button">Volver al Menú</Link>
+                </div>
+            )}
         </div>
     );
 };
 
 export default Kinematics;
-

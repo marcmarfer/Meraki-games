@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './words-box-1.css';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 
 const WordsBox1 = () => {
   const location = useLocation();
@@ -104,11 +104,11 @@ const WordsBox1 = () => {
     const id = e.dataTransfer.getData('id');
     const content = e.dataTransfer.getData('content');
     const word = { id, content };
-  
+
     if (target === 'box-a') {
       setWordsWithA(prevState => [...prevState, { ...word, color: '#000' }]);
       setWords(prevState => prevState.filter(w => w.id !== id));
-  
+
       if (selectedLevel === "easy" && content.startsWith('a')) {
         setScore(score + 1);
       } else if (selectedLevel === "medium" && content.startsWith('a') && content.endsWith('s')) {
@@ -123,7 +123,7 @@ const WordsBox1 = () => {
       setWordsWithA(prevState => prevState.filter(w => w.id !== id));
     }
   };
-  
+
   const onDragOver = (e) => {
     e.preventDefault();
   };
@@ -206,7 +206,7 @@ const WordsBox1 = () => {
           ))}
         </div>
         <div className='end-game-button'>
-          <button onClick={endGame} className='end-game-btn'>Terminar Juego</button>
+          <Link to="/" onClick={endGame} className='end-game-btn'>Terminar Juego</Link>
         </div>
       </div>
     </div>

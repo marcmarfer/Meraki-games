@@ -46,3 +46,9 @@ canvas {
     border-radius: 10px;
     cursor: crosshair;
 }
+
+.navigation-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+}

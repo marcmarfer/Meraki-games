@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
 import './Patitos.css';
 import patitoSinColor from './img/Vector 20.png';
 import verdeRosa from './img/verdeRosa.png';
@@ -210,7 +210,7 @@ function Patitos() {
             {patito.color === 'sinColor' ? (
               <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patitoSinColor} alt={`Patito sin color`} onClick={() => selectPatito(patito)} />
             ) : patito.color ===
-            'sinColor' ? (
+              'sinColor' ? (
               <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patitoSinColor} alt={`Patito sin color`} onClick={() => selectPatito(patito)} />
             ) : patito.color === 'verdeRosa' || patito.color === 'azulGris' ? (
               <img className={`${getPatitoSizeClass()} h-auto cursor-pointer`} src={patito.color === 'verdeRosa' ? verdeRosa : azulGris} alt={`Patito ${patito.color}`} onClick={() => selectPatito(patito)} />
@@ -220,9 +220,11 @@ function Patitos() {
           </div>
         ))}
       </div>
-      {/* {victory && (
-        <div className="mt-4 text-green-600 font-bold">¡Felicidades! Has encontrado todos los patitos.</div>
-      )} */}
+      {victory && (
+        <div className="navigation-buttons mt-4">
+          <Link to="/" className="button">Volver al Menú</Link>
+        </div>
+      )}
     </div>
   );
 }

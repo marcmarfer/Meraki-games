@@ -117,6 +117,16 @@ function KnownWords() {
   ];
 
   useEffect(() => {
+    if (level === '1') {
+      setSelectedLevel('easy');
+    } else if (level === '5') {
+      setSelectedLevel('medium');
+    } else if (level === '10') {
+      setSelectedLevel('hard');
+    }
+  }, [level]);
+
+  useEffect(() => {
     let words = wordsEasy; // Por defecto, nivel fácil
 
     if (selectedLevel === "medium") {
@@ -130,7 +140,6 @@ function KnownWords() {
   }, [selectedLevel]);
 
   const shuffleArray = (array) => {
-
     const shuffledArray = [...array];
     for (let i = shuffledArray.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
@@ -175,7 +184,6 @@ function KnownWords() {
       level: parseInt(level)
     };
   
-
     fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
       method: 'POST',
       headers: {
@@ -200,7 +208,7 @@ function KnownWords() {
   return (
     <div className="container mx-auto p-6 pt-36">
       <div>
-        <h2 className="text-xl font-bold mb-4">Selecciona las palabras que conoces:</h2>
+        <h2 className="text-2xl font-bold mb-4">Selecciona las palabras que conoces:</h2>
         <div className="grid grid-cols-3 gap-4">
           {wordsToUse.map((word) => (
             <button
@@ -213,15 +221,8 @@ function KnownWords() {
           ))}
         </div>
         <div className="mt-4 mb-2 text-left">
-          <Link to="/" onClick={endGame} className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Terminar Juego</Link>
+          <Link to="/" onClick={endGame} className="bg-teal-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Terminar Juego</Link>
         </div>
-        <p>Palabras conocidas: {correctWords.length}</p>
-        <p>Palabras falsas seleccionadas: {fakeWordsSelected.length}</p>
-      </div>
-      <div className="mt-4">
-        <button onClick={() => setSelectedLevel("easy")} className={`mr-2 ${selectedLevel === "easy" ? "bg-yellow-300" : "bg-gray-300"} hover:bg-yellow-300 text-white font-bold py-2 px-4 rounded`}>Fácil</button>
-        <button onClick={() => setSelectedLevel("medium")} className={`mr-2 ${selectedLevel === "medium" ? "bg-yellow-300" : "bg-gray-300"} hover:bg-yellow-300 text-white font-bold py-2 px-4 rounded`}>Medio</button>
-        <button onClick={() => setSelectedLevel("hard")} className={`mr-2 ${selectedLevel === "hard" ? "bg-yellow-300" : "bg-gray-300"} hover:bg-yellow-300 text-white font-bold py-2 px-4 rounded`}>Difícil</button>
       </div>
     </div>
   );

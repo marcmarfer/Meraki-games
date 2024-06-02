@@ -9,8 +9,16 @@ const useSimon = () => {
   const gameTestId = searchParams.get('gameTest_id');
   const testId = searchParams.get('test_id');
   const gameId = searchParams.get('game_id');
-  const level = searchParams.get('level');
-  
+  const level = parseInt(searchParams.get('level'));
+
+  // Map the level parameter to difficulty
+  const getDifficulty = (level) => {
+    if (level === 1) return 'easy';
+    if (level === 5) return 'medium';
+    if (level === 10) return 'hard';
+    return 'easy'; // Default to 'easy' if level is not 1, 5, or 10
+  };
+
   const [sequence, setSequence] = useState([]);
   const [reversedSequence, setReversedSequence] = useState([]);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -19,7 +27,7 @@ const useSimon = () => {
   const [errors, setErrors] = useState(0);
   const [playButton, setPlayButton] = useState(false);
   const [rounds, setRounds] = useState(4);
-  const [difficulty, setDifficulty] = useState('easy');
+  const [difficulty, setDifficulty] = useState(getDifficulty(level));
   const [errorCounted, setErrorCounted] = useState(false);
   const [sequenceFailed, setSequenceFailed] = useState(false); // New state variable to track if sequence has failed
   const buttonRefs = Array.from({ length: TOTAL_BUTTONS.length }, (_) =>
@@ -116,16 +124,12 @@ const useSimon = () => {
   }, [difficulty]);
 
   useEffect(() => {
+    console.log(points, errors, rounds)
     if (points + errors === rounds) {
       enviarDatosAlServidor();
       resetGame();
     }
-  }, [points]);
-
-  const handleChangeDifficulty = (e) => {
-    setDifficulty(e.target.value);
-    resetGame();
-  };
+  }, [points, errors]);
 
   const enviarDatosAlServidor = () => {
     const data = {
@@ -137,7 +141,7 @@ const useSimon = () => {
       score: points,
       errors: errors,
       played: "true",
-      level: parseInt(level)
+      level: level
     };
 
     fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
@@ -173,7 +177,6 @@ const useSimon = () => {
     buttonRefs,
     points,
     playButton,
-    handleChangeDifficulty,
     difficulty
   };
 };

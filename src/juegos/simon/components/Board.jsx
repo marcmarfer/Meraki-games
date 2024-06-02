@@ -34,15 +34,6 @@ const Board = () => {
         >
           {playButton ? 'Playing' : 'Play'}
         </button>
-        <select
-          className="absolute right-10 top-5 bg-gray-800 text-white px-3 py-2 rounded-md"
-          onChange={handleChangeDifficulty}
-          value={difficulty}
-        >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </select>
       </section>
     </main>
   );

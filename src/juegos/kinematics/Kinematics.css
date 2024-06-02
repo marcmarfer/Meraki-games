@@ -23,8 +23,9 @@
 
 .answers {
     display: flex;
-    justify-content: space-around;
-    width: 30%;
+    justify-content: center;
+    width: 50%;
+    gap: 20px;
     font-size: 1.25rem;
 }
 

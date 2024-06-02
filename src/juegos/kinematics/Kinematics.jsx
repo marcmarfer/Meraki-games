@@ -53,6 +53,17 @@ const Kinematics = () => {
         y: 0,
         width: 300,
         height: 150,
+        velocityX: 80,
+        maxVelocityX: 0,
+        velocityY: 0,
+        image: new Image()
+    });
+
+    const [boat, setBoat] = useState({
+        x: 0,
+        y: 0,
+        width: 400,
+        height: 300,
         velocityX: 60,
         maxVelocityX: 0,
         velocityY: 0,
@@ -74,7 +85,7 @@ const Kinematics = () => {
         const newContext = canvas.getContext('2d');
         setContext(newContext);
 
-        //set images for each sprite and set their initial position on the canvas
+        // Set images for each sprite and set their initial position on the canvas
         const backgroundImage = new Image();
         backgroundImage.src = 'src/juegos/kinematics/sprites/Utils/GameBackground.png';
         setBackgroundImage(backgroundImage);
@@ -105,7 +116,18 @@ const Kinematics = () => {
             y: canvas.height - 200,
             image: carImage
         }));
-    }, [canvas]);
+
+        if (level === '5' || level === '10') {
+            const boatImage = new Image();
+            boatImage.src = 'src/juegos/kinematics/sprites/Vehicles/Boat.png';
+            setBoat(prevState => ({
+                ...prevState,
+                x: (canvas.width - 200) - (helicopter.width / 2),
+                y: canvas.height - 400,
+                image: boatImage
+            }));
+        }
+    }, [canvas, level]);
 
     useEffect(() => {
         if (canvas && context && !canvasContainerAdded) {
@@ -132,7 +154,8 @@ const Kinematics = () => {
 
             function handleMovements(deltaTime, time) {
                 setHelicopter(prevState => ({
-                    ...prevState,
+                    ...prevState
+                    ,
                     x: helicopter.x += prevState.velocityX * deltaTime / 1000,
                     y: helicopter.y = helicopter.initialPosY + (prevState.amplitudeY * Math.cos((time / 1000) * prevState.frequencyY * (180 / Math.PI))),
                     initialPosY: helicopter.initialPosY += (helicopter.y - helicopter.initialPosY) / prevState.smoothness,
@@ -147,6 +170,13 @@ const Kinematics = () => {
                     ...prevState,
                     x: car.x += prevState.velocityX * deltaTime / 1000,
                 }));
+
+                if (level === '5' || level === '10') {
+                    setBoat(prevState => ({
+                        ...prevState,
+                        x: boat.x -= prevState.velocityX * deltaTime / 1000,
+                    }));
+                }
             }
 
             let renderImage = (e, image) => {
@@ -158,22 +188,32 @@ const Kinematics = () => {
                     e.target.context.drawImage(image, plane.x, plane.y, plane.width, plane.height);
                 } else if (image === car.image) {
                     e.target.context.drawImage(image, car.x, car.y, car.width, car.height);
+                } else if (image === boat.image) {
+                    e.target.context.drawImage(image, boat.x, boat.y, boat.width, boat.height);
                 }
             }
 
             let draw = () => {
                 context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
-                const imagesArray = [backgroundImage, helicopter.image, plane.image, car.image];
+                const imagesArray = [backgroundImage, helicopter.image];
+            
+                if (level === '5' || level === '10') {
+                    imagesArray.push(boat.image);
+                }
 
+                imagesArray.push(car.image);
+                imagesArray.push(plane.image);
+            
                 const animate = () => {
                     imagesArray.forEach((image) => {
                         renderImage({ target: { context } }, image);
                     });
                 };
-
+            
                 animate();
             }
-
+            
+            
             function render() {
                 draw();
             }
@@ -202,25 +242,49 @@ const Kinematics = () => {
                 cancelAnimationFrame(requestId);
             };
         }
-    }, [canvas, context]);
+    }, [canvas, context, level]);
 
     useEffect(() => {
-        if (timer === 11) {
+        const maxTimer = level === '5' || level === '10' ? 12 : 8;
+        if (timer === maxTimer) {
             setShowQuestion(true);
         }
-    }, [timer]);
+    }, [timer, level]);
+    
 
     const handleAnswerSelection = (answer) => {
+        let score = 0;
+        let errors = 0;
+    
+        if (level === '1') {
+            if (answer === 'yellow') {
+                score = 1;
+            } else {
+                errors = 1;
+            }
+        } else if (level === '5') {
+            if (answer === 'boat') {
+                score = 1;
+            } else {
+                errors = 1;
+            }
+        } else if (level === '10') {
+            if (answer === 'Plane, Car, Boat, Rocket') {
+                score = 1;
+            } else {
+                errors = 1;
+            }
+        }
+    
         setSelectedAnswer(answer);
-        enviarDatosAlServidor();
+        enviarDatosAlServidor(score, errors);
     };
-
-    const enviarDatosAlServidor = () => {
+    
+    const enviarDatosAlServidor = (score, errors) => {
         const data = {
             student_id: parseInt(studentId),
-            score: selectedAnswer === 'yellow' ? 1 : 0,
-            errors: selectedAnswer !== 'yellow' ? 1 : 0,
-            student_id: parseInt(studentId),
+            score: score,
+            errors: errors,
             game_test_id: parseInt(gameTestId),
             test_id: parseInt(testId),
             game_id: parseInt(gameId),
@@ -228,7 +292,7 @@ const Kinematics = () => {
             played: "true",
             level: parseInt(level)
         };
-
+    
         fetch('https://neurolab-dev.alumnes-monlau.com/api/games', {
             method: 'POST',
             headers: {
@@ -249,6 +313,7 @@ const Kinematics = () => {
                 console.error('Error:', error);
             });
     };
+    
 
     useEffect(() => {
         const interval = setInterval(() => {
@@ -264,17 +329,43 @@ const Kinematics = () => {
             {!showQuestion && <p className='statement'>Analiza la escena que acontece:</p>}
             {showQuestion && (
                 <div className="question-container">
-                    <h2>¿De qué color es el vehículo terrestre?</h2>
-                    <div className="answers">
-                        <button className='button' onClick={() => handleAnswerSelection('yellow')}>Amarillo</button>
-                        <button className='button' onClick={() => handleAnswerSelection('red')}>Rojo</button>
-                        <button className='button' onClick={() => handleAnswerSelection('blue')}>Azul</button>
-                    </div>
+                    {level === '1' && (
+                        <>
+                            <h2>¿De qué color es el vehículo terrestre?</h2>
+                            <div className="answers">
+                                <button className='button' onClick={() => handleAnswerSelection('yellow')}>Amarillo</button>
+                                <button className='button' onClick={() => handleAnswerSelection('red')}>Rojo</button>
+                                <button className='button' onClick={() => handleAnswerSelection('blue')}>Azul</button>
+                            </div>
+                        </>
+                    )}
+                    {level === '5' && (
+                        <>
+                            <h2>¿Qué vehículo no encaja en la escena?</h2>
+                            <div className="answers">
+                                <button className='button' onClick={() => handleAnswerSelection('rocket')}>Cohete</button>
+                                <button className='button' onClick={() => handleAnswerSelection('plane')}>Avión</button>
+                                <button className='button' onClick={() => handleAnswerSelection('car')}>Coche</button>
+                                <button className='button' onClick={() => handleAnswerSelection('boat')}>Barco</button>
+                            </div>
+                        </>
+                    )}
+                    {level === '10' && (
+                        <>
+                            <h2>¿Qué vehículos aparecieron?</h2>
+                            <div className="answers">
+                                <button className='button' onClick={() => handleAnswerSelection('Plane, Car, Boat, Helicopter')}>Avión, Coche, Barco, Helicóptero</button>
+                                <button className='button' onClick={() => handleAnswerSelection('Plane, Car, Boat, Rocket')}>Avión, Coche, Barco, Cohete</button>
+                                <button className='button' onClick={() => handleAnswerSelection('Plane, Car, Bicycle, Rocket')}>Avión, Coche, Bicicleta, Cohete</button>
+                                <button className='button' onClick={() => handleAnswerSelection('Paper plane, Car, Boat, Rocket')}>Avión de papel, Coche, Barco, Cohete</button>
+                            </div>
+                        </>
+                    )}
                 </div>
             )}
         </div>
     );
 };
 
-
 export default Kinematics;
+

@@ -220,8 +220,8 @@ function KnownWords() {
             </button>
           ))}
         </div>
-        <div className="mt-4 mb-2 text-left">
-          <Link to="/" onClick={endGame} className="bg-teal-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Terminar Juego</Link>
+        <div className="mt-6 mb-2 text-center">
+          <Link to="/" onClick={endGame} className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded">Terminar Juego</Link>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ const WordsBox1 = () => {
   const testId = searchParams.get('test_id');
   const gameId = searchParams.get('game_id');
   const gameTestId = searchParams.get('gameTest_id');
-  const level = searchParams.get('level');
+  const level = parseInt(searchParams.get('level'), 10);
 
   const [words, setWords] = useState([
     { id: '1', content: 'alo', color: '' },
@@ -24,10 +24,22 @@ const WordsBox1 = () => {
     { id: '9', content: 'árbol', color: '' },
     { id: '10', content: 'zapato', color: '' }
   ]);
+
   const [wordsWithA, setWordsWithA] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState("easy");
   const [score, setScore] = useState(0);
   const [mistakes, setMistakes] = useState(0);
+
+  useEffect(() => {
+    const determineLevel = (level) => {
+      if (level === 1) return "easy";
+      if (level === 5) return "medium";
+      if (level === 10) return "hard";
+      return "easy";
+    };
+
+    setSelectedLevel(determineLevel(level));
+  }, [level]);
 
   useEffect(() => {
     let newWords = [];
@@ -156,11 +168,11 @@ const WordsBox1 = () => {
 
   const renderTitle = () => {
     if (selectedLevel === "easy") {
-      return "Fácil: Empieza con 'a'";
+      return "Introduce las palabras que empiecen con 'a'";
     } else if (selectedLevel === "medium") {
-      return "Medio: Empieza con 'a' y termina con 's'";
+      return "Introduce las palabras que empiecen con 'a' y terminen con 's'";
     } else if (selectedLevel === "hard") {
-      return "Difícil: Empieza con 'c' y contiene 'a'";
+      return "Introduce las palabras que empiecen con 'c' y contengan la letra 'a'";
     }
   };
 
@@ -169,11 +181,6 @@ const WordsBox1 = () => {
       <div className='words-box-1-container'>
         <div className='title'>
           <h2>{renderTitle()}</h2>
-        </div>
-        <div className='level-buttons'>
-          <button onClick={() => setSelectedLevel("easy")} className={`mr-2 level-button ${selectedLevel === "easy" ? "selected" : ""}`}>Fácil</button>
-          <button onClick={() => setSelectedLevel("medium")} className={`mr-2 level-button ${selectedLevel === "medium" ? "selected" : ""}`}>Medio</button>
-          <button onClick={() => setSelectedLevel("hard")} className={`mr-2 level-button ${selectedLevel === "hard" ? "selected" : ""}`}>Difícil</button>
         </div>
         <div className='words-grid flex flex-wrap justify-center'>
           {words.map(word => (
@@ -198,17 +205,12 @@ const WordsBox1 = () => {
             </div>
           ))}
         </div>
-        <div className='score-section'>
-          <p>Puntaje: {score}</p>
-          <p>Errores: {mistakes}</p>
-        </div>
         <div className='end-game-button'>
           <button onClick={endGame} className='end-game-btn'>Terminar Juego</button>
         </div>
       </div>
     </div>
   );
-  
 }
 
 export default WordsBox1;

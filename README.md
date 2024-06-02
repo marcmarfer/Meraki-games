@@ -28,5 +28,5 @@ npm run dev
 ```
 Esto iniciará el servidor de desarrollo y podrás acceder a la aplicación desde tu navegador en http://localhost:5173.
 
-**Importante**
+**Importante:**
 Este proyecto está bajo la Licencia MIT con restricciones adicionales para uso interno del Centro de Estudios Monlau.
